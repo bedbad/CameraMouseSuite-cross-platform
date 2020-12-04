@@ -54,6 +54,7 @@ void MainWindow::setupCameraWidgets()
     CameraMouseController *controller = new CameraMouseController(settings, trackingModule, controlModule);
     videoManagerSurface = new VideoManagerSurface(settings, controller, ui->frameLabel, this);
 
+
     // Create device selection menu
     QActionGroup *cameraGroup = new QActionGroup(this);
     cameraGroup->setExclusive(true);

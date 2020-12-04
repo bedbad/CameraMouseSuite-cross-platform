@@ -59,9 +59,11 @@ win32 {
                 -lopencv_core2411 \
                 -lopencv_imgproc2411 \
                 -lopencv_objdetect2411 \
-                -lopencv_video2411
+                -lopencv_video2411 \
+                -luser32
         message(Release configuration!)
     }
+    LIBS += -luser32
 }
 
 SOURCES += *.cpp
