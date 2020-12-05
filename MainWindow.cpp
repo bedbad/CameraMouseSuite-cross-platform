@@ -78,11 +78,12 @@ void MainWindow::setupCameraWidgets()
 
 void MainWindow::setupSettingsWidgets()
 {
+#if defined (Q_OS_WIN)
     // Set This Window always on TOP
     SetForegroundWindow((HWND)winId());
     Qt::WindowFlags flags = this->windowFlags();
     this->setWindowFlags(flags|Qt::WindowStaysOnTopHint);
-
+#endif
     // Clicking
     connect(ui->enableClickingCheckBox, SIGNAL(toggled(bool)), ui->dwellSlider, SLOT(setEnabled(bool)));
     connect(ui->enableClickingCheckBox, SIGNAL(toggled(bool)), ui->dwellSpinBox, SLOT(setEnabled(bool)));
