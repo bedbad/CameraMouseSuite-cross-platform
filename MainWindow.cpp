@@ -25,6 +25,8 @@
 #include "TemplateTrackingModule.h"
 #include "MouseControlModule.h"
 
+#include <Windows.h>
+
 Q_DECLARE_METATYPE(QCameraInfo)
 
 namespace CMS {
@@ -76,6 +78,11 @@ void MainWindow::setupCameraWidgets()
 
 void MainWindow::setupSettingsWidgets()
 {
+    // Set This Window always on TOP
+    SetForegroundWindow((HWND)winId());
+    Qt::WindowFlags flags = this->windowFlags();
+    this->setWindowFlags(flags|Qt::WindowStaysOnTopHint);
+
     // Clicking
     connect(ui->enableClickingCheckBox, SIGNAL(toggled(bool)), ui->dwellSlider, SLOT(setEnabled(bool)));
     connect(ui->enableClickingCheckBox, SIGNAL(toggled(bool)), ui->dwellSpinBox, SLOT(setEnabled(bool)));
