@@ -17,7 +17,6 @@
 
 #include <stdexcept>
 #include <QDebug>
-
 #include "Keyboard.h"
 
 #ifdef Q_OS_LINUX
@@ -34,6 +33,7 @@
 #include <queue>
 #include <Windows.h>
 #include <QMutex>
+#include <shobjidl.h>
 #elif defined Q_OS_MAC
 #else
 #endif
@@ -215,6 +215,7 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
         case VK_LCONTROL:
         case VK_CONTROL:
             key = KEY_CONTROL;
+            PlaySound(TEXT("recycle.wav"), NULL, SND_ASYNC);
             break;
         case VK_RMENU:
         case VK_LMENU:
