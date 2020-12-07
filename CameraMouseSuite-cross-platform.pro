@@ -56,14 +56,16 @@ win32 {
     }
     CONFIG(release, debug|release) {
         LIBS += -L$$(OPENCV_DIR)/lib/ \
-                -lopencv_core2411 \
-                -lopencv_imgproc2411 \
-                -lopencv_objdetect2411 \
-                -lopencv_video2411 \
+                -lopencv_core3412 \
+                -lopencv_imgproc3412 \
+                -lopencv_objdetect3412 \
+                -lopencv_video3412 \
                 -luser32
+
         message(Release configuration!)
     }
-    LIBS += -luser32
+    LIBS += -luser32 -lwinmm
+
 }
 
 SOURCES += *.cpp
