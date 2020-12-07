@@ -1,2 +1,16 @@
-UI:
-    choose appropriate sound for the control change
+
+    - Implement Control: 1)inactivity 2) Key pressed
+    - Implement Play Sound - Done
+
+    - Implemet Exclude
+    - Implement Sensitivity Controls
+
+    - Automatic Location
+    - Automatic Startup
+
+    - Center the tracking by pressing Alt
+
+    - Implement installable:
+            - Installable on Windows
+            - Installable on Mac
+            - Installable on Android
