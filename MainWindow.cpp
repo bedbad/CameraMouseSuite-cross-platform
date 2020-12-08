@@ -55,6 +55,7 @@ void MainWindow::setupCameraWidgets()
     MouseControlModule *controlModule = new MouseControlModule(settings);
     CameraMouseController *controller = new CameraMouseController(settings, trackingModule, controlModule);
     videoManagerSurface = new VideoManagerSurface(settings, controller, ui->frameLabel, this);
+//    FeatureInitializationModule * features = new FeatureInitializationModule();
 
 
     // Create device selection menu
@@ -84,6 +85,7 @@ void MainWindow::setupSettingsWidgets()
     Qt::WindowFlags flags = this->windowFlags();
     this->setWindowFlags(flags|Qt::WindowStaysOnTopHint);
 #endif
+
     // Clicking
     connect(ui->enableClickingCheckBox, SIGNAL(toggled(bool)), ui->dwellSlider, SLOT(setEnabled(bool)));
     connect(ui->enableClickingCheckBox, SIGNAL(toggled(bool)), ui->dwellSpinBox, SLOT(setEnabled(bool)));

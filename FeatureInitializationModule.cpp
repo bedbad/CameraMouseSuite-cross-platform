@@ -90,8 +90,8 @@ Point FeatureInitializationModule::initializeFeature(cv::Mat &frame)
         it->x *= 2;
         it->y *= 2;
         it->width *= 2;
-        it->height *= 2;
         face = frame(*it);
+        it->height *= 2;
 
         cv::Rect nose = detectNose(face);
         if (nose.width > 0 && nose.height > 0) // Found nose!

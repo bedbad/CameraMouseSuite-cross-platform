@@ -77,7 +77,6 @@ void CameraMouseController::processFrame(cv::Mat &frame)
         }
     }
 }
-
 void CameraMouseController::processClick(Point position)
 {
     if (!prevFrame.empty())
@@ -86,7 +85,6 @@ void CameraMouseController::processClick(Point position)
         controlModule->restart();
     }
 }
-
 bool CameraMouseController::isAutoDetectWorking()
 {
     return initializationModule.allFilesLoaded();

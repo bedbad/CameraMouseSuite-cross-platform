@@ -22,6 +22,8 @@
 #include <QCamera>
 #include <QAbstractVideoSurface>
 
+#include <QTextToSpeech>
+
 #include "Settings.h"
 
 namespace Ui {
@@ -48,6 +50,11 @@ private slots:
     void verticalGainChanged(int verticalGain);
     void lockGainClicked(bool lock);
 
+    // ------- Voice Control/ Text To speech Change--------------------------
+
+    // ------- Voice Control/ Text To Speech Change--------------------------
+
+
 private:
     Ui::MainWindow *ui;
     QCamera *camera;
@@ -56,6 +63,8 @@ private:
 
     void setupCameraWidgets();
     void setupSettingsWidgets();
+
+
 };
 
 } // namespace CMS

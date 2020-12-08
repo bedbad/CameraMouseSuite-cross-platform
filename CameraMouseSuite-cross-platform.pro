@@ -16,7 +16,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-------------------------------------------------
 
-QT       += core gui multimedia multimediawidgets
+QT += core gui multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -64,6 +64,7 @@ win32 {
         message(Release configuration!)
     }
     LIBS += -luser32
+    LIBS += -lwinmm
 }
 
 SOURCES += *.cpp
@@ -100,3 +101,6 @@ first.depends = $(first) copydata
 export(first.depends)
 export(copydata.commands)
 QMAKE_EXTRA_TARGETS += first copydata
+
+DISTFILES += \
+    TODO
