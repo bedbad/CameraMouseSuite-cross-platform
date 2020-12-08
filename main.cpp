@@ -17,9 +17,10 @@
 
 #include "MainWindow.h"
 #include <QApplication>
-
+#include "AppConfig.h"
 int main(int argc, char *argv[])
 {
+    CMS::setAutoStart(true);
     QApplication a(argc, argv);
     CMS::MainWindow w;
     w.show();
