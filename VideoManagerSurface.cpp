@@ -57,13 +57,7 @@ QList<QVideoFrame::PixelFormat> VideoManagerSurface::supportedPixelFormats(QAbst
 
 bool VideoManagerSurface::present(const QVideoFrame &frame)
 {
-    if (!supportedFormats.contains(frame.pixelFormat()))
-    {
-        setError(IncorrectFormatError);
-        return false;
-    }
-    else
-    {
+
         QVideoFrame frameToProcess(frame);
 
         if(!frameToProcess.map(QAbstractVideoBuffer::ReadWrite))
@@ -111,7 +105,6 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
         imageLabel->update();
 
         return true;
-    }
 }
 
 void VideoManagerSurface::mousePressEvent(QMouseEvent *event)
