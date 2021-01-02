@@ -30,11 +30,13 @@ class StandardTrackingModule : public ITrackingModule
 {
 public:
     StandardTrackingModule();
-    Point track(cv::Mat &frame);
-    void setTrackPoint(cv::Mat &frame, Point point);
-    cv::Size getImageSize();
-    bool isInitialized();
+    Point track(cv::Mat &frame) override;
+    void setTrackPoint(cv::Mat &frame, Point point) override;
+    cv::Size getImageSize() override;
+    bool isInitialized() override;
 
+signals:
+    void positionUpdated(cv::Mat, Point point);
 private:
     TrackingModuleSanityCheck sanityCheck;
     bool initialized;
@@ -43,6 +45,7 @@ private:
     cv::Mat prevGrey;
     std::vector<cv::Point2f> prevTrackPoints;
     cv::Size imageSize;
+
 };
 
 } // namespace CMS

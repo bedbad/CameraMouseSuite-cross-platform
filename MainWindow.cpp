@@ -14,17 +14,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include <QCameraInfo>
 #include <QMessageBox>
-
 #include "MainWindow.h"
 #include "ui_mainWindow.h"
 #include "VideoManagerSurface.h"
 #include "CameraMouseController.h"
 #include "TemplateTrackingModule.h"
+#include "StandardTrackingModule.h"
 #include "MouseControlModule.h"
-
 #include <Windows.h>
 
 Q_DECLARE_METATYPE(QCameraInfo)
@@ -51,12 +49,11 @@ MainWindow::~MainWindow()
 void MainWindow::setupCameraWidgets()
 {
     // Create video manager
-    ITrackingModule *trackingModule = new TemplateTrackingModule(0.08); // TODO magic constants are not nice :(
+    ITrackingModule *trackingModule = new StandardTrackingModule(); // TODO magic constants are not nice :(
     MouseControlModule *controlModule = new MouseControlModule(settings);
     CameraMouseController *controller = new CameraMouseController(settings, trackingModule, controlModule);
     videoManagerSurface = new VideoManagerSurface(settings, controller, ui->frameLabel, this);
 //    FeatureInitializationModule * features = new FeatureInitializationModule();
-
 
     // Create device selection menu
     QActionGroup *cameraGroup = new QActionGroup(this);
@@ -76,7 +73,6 @@ void MainWindow::setupCameraWidgets()
     setCamera(QCameraInfo::defaultCamera());
     if (!controller->isAutoDetectWorking()) ui->autoDetectNoseCheckBox->setVisible(false);
 }
-
 void MainWindow::setupSettingsWidgets()
 {
 #if defined (Q_OS_WIN)
@@ -126,17 +122,14 @@ void MainWindow::setupSettingsWidgets()
     connect(ui->autoDetectNoseCheckBox, SIGNAL(toggled(bool)), &settings, SLOT(setAutoDetectNose(bool)));
     ui->autoDetectNoseCheckBox->setChecked(settings.isAutoDetectNoseEnabled());
 }
-
 void MainWindow::updateSelectedCamera(QAction *action)
 {
     setCamera(qvariant_cast<QCameraInfo>(action->data()));
 }
-
 void MainWindow::displayCameraError()
 {
     QMessageBox::warning(this, tr("Camera error"), camera->errorString());
 }
-
 void MainWindow::setCamera(const QCameraInfo &cameraInfo)
 {
     if (camera)
@@ -152,7 +145,6 @@ void MainWindow::setCamera(const QCameraInfo &cameraInfo)
     camera->setCaptureMode(QCamera::CaptureViewfinder);
     camera->searchAndLock();
 }
-
 void MainWindow::updateDwellSpinBox(int dwellMillis)
 {
     double dwellTime = dwellMillis / 1000.0;
@@ -170,13 +162,11 @@ void MainWindow::horizontalGainChanged(int horizontalGain)
     if (ui->lockGainButton->isChecked())
         ui->verticalGainSlider->setValue(horizontalGain);
 }
-
 void MainWindow::verticalGainChanged(int verticalGain)
 {
     if (ui->lockGainButton->isChecked())
         ui->horizontalGainSlider->setValue(verticalGain);
 }
-
 void MainWindow::lockGainClicked(bool lock)
 {
     if (lock)

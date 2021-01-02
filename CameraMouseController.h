@@ -20,6 +20,8 @@
 
 #include <cv.h>
 #include <QTime>
+#include <QThread>
+#include <QObject>
 
 #include "FeatureInitializationModule.h"
 #include "TrackingModule.h"
@@ -29,22 +31,32 @@
 
 namespace CMS {
 
-class CameraMouseController
+class CameraMouseController : public QObject
 {
 public:
     CameraMouseController(Settings &settings, ITrackingModule *trackingModule, MouseControlModule *controlModule);
     ~CameraMouseController();
-    void processFrame(cv::Mat &frame);
     void processClick(Point position);
     bool isAutoDetectWorking();
+    void drawOnFrame(cv::Mat &frame, Point point);
+
+protected slots:
+    void frameFinished(cv::Mat, Point);
 
 private:
     Settings &settings;
+    QThread trackingThread;
     FeatureInitializationModule initializationModule;
     ITrackingModule *trackingModule;
     MouseControlModule *controlModule;
     cv::Mat prevFrame;
     QTime featureCheckTimer;
+
+signals:
+    void updateTrackPoint(cv::Mat, Point position);
+    void processFrame(cv::Mat &frame);
+    void frameProcessed(Point);
+
 };
 
 } // namespace CMS

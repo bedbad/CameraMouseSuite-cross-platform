@@ -21,72 +21,95 @@
 #endif
 
 #include "CameraMouseController.h"
+#include "ImageProcessing.h"
 
 namespace CMS {
 
 CameraMouseController::CameraMouseController(Settings &settings, ITrackingModule *trackingModule, MouseControlModule *controlModule) :
     settings(settings), trackingModule(trackingModule), controlModule(controlModule)
 {
+    trackingModule->moveToThread(&trackingThread);
+    connect(&trackingThread, &QThread::finished, trackingModule, &QObject::deleteLater, Qt::QueuedConnection);
+    connect(this, SIGNAL(processFrame(cv::Mat)), trackingModule, SLOT(track(cv::Mat)), Qt::QueuedConnection);
+    connect(this, SIGNAL(updateTrackPoint(cv::Mat, Point)), trackingModule, SLOT(setTrackPoint(cv::Mat, Point)), Qt::QueuedConnection);
+    connect(trackingModule, SIGNAL(positionUpdated(cv::Mat, Point)), this, SLOT(frameFinished(cv::Mat, Point)), Qt::QueuedConnection);
+    trackingThread.start();
+    
     featureCheckTimer.start();
 }
 
-CameraMouseController::~CameraMouseController()
-{
-    delete trackingModule;
+void CameraMouseController::drawOnFrame(cv::Mat &frame, Point point){
+    float ratio = 0.03;
+    int width = (int) (frame.size().width * ratio);
+    int height = (int) (frame.size().height * ratio);
+    cv::Rect rectangle(point.X() - width / 2, point.Y() - height / 2, width, height);
+    ImageProcessing::drawGreenRectangle(frame, rectangle);
+}
+
+CameraMouseController::~CameraMouseController(){
+    trackingThread.wait();
+    trackingThread.quit();
     delete controlModule;
 }
 
-void CameraMouseController::processFrame(cv::Mat &frame)
-{
-    prevFrame = frame;
+//void CameraMouseController::processFrame(cv::Mat &frame)
+//{
+//    prevFrame = frame;
 
-    if (trackingModule->isInitialized())
-    {
-        Point featurePosition = trackingModule->track(frame);
-        if (!featurePosition.empty())
-        {
-            if (settings.isAutoDetectNoseEnabled() && featureCheckTimer.elapsed() > 1000)
-            {
-                Point autoFeaturePosition = initializationModule.initializeFeature(frame);
-                if (!autoFeaturePosition.empty())
-                {
-                    double distThreshSq = settings.getResetFeatureDistThreshSq();
-                    Point disp = autoFeaturePosition - featurePosition;
-                    if (disp * disp > distThreshSq)
-                    {
-                        trackingModule->setTrackPoint(frame, autoFeaturePosition);
-                        controlModule->setScreenReference(controlModule->getPrevPos());
-                        controlModule->restart();
-                        featurePosition = autoFeaturePosition;
-                    }
-                    featureCheckTimer.restart();
-                }
-            }
-            trackingModule->drawOnFrame(frame, featurePosition);
-            controlModule->update(featurePosition);
-        }
-    }
-    else if (settings.isAutoDetectNoseEnabled())
-    {
-        Point initialFeaturePosition = initializationModule.initializeFeature(frame);
-        if (!initialFeaturePosition.empty())
-        {
-            trackingModule->setTrackPoint(frame, initialFeaturePosition);
-            controlModule->setScreenReference(settings.getScreenResolution()/2);
-            controlModule->restart();
-        }
-    }
+//    if (trackingModule->isInitialized())
+//    {
+//        Point featurePosition = trackingModule->track(frame);
+//        if (!featurePosition.empty())
+//        {
+////            if (settings.isAutoDetectNoseEnabled() && featureCheckTimer.elapsed() > 1000)
+////            {
+////                Point autoFeaturePosition = Point();
+////                        //initializationModule.initializeFeature(frame);
+////                if (!autoFeaturePosition.empty())
+////                {
+////                    double distThreshSq = settings.getResetFeatureDistThreshSq();
+////                    Point disp = autoFeaturePosition - featurePosition;
+////                    if (disp * disp > distThreshSq)
+////                    {
+////                        trackingModule->setTrackPoint(frame, autoFeaturePosition);
+////                        controlModule->setScreenReference(controlModule->getPrevPos());
+////                        controlModule->restart();
+////                        featurePosition = autoFeaturePosition;
+////                    }
+////                    featureCheckTimer.restart();
+////                }
+////            }
+//            trackingModule->drawOnFrame(frame, featurePosition);
+//            controlModule->update(featurePosition);
+//        }
+//    }
+////    else if (settings.isAutoDetectNoseEnabled())
+////    {
+////        Point initialFeaturePosition = initializationModule.initializeFeature(frame);
+////        if (!initialFeaturePosition.empty())
+////        {
+////            trackingModule->setTrackPoint(frame, initialFeaturePosition);
+////            controlModule->setScreenReference(settings.getScreenResolution()/2);
+////            controlModule->restart();
+////        }
+////    }
+//}
+
+
+void CameraMouseController::frameFinished(cv::Mat mat, Point featurePosition){
+    controlModule->update(featurePosition);
+    emit frameProcessed(featurePosition);
 }
-void CameraMouseController::processClick(Point position)
-{
+
+void CameraMouseController::processClick(Point position){
     if (!prevFrame.empty())
     {
-        trackingModule->setTrackPoint(prevFrame, position);
+        emit updateTrackPoint(prevFrame, position);
         controlModule->restart();
     }
 }
-bool CameraMouseController::isAutoDetectWorking()
-{
+
+bool CameraMouseController::isAutoDetectWorking(){
     return initializationModule.allFilesLoaded();
 }
 

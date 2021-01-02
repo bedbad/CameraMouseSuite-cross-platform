@@ -18,6 +18,7 @@
 #ifndef CMS_VIDEOMANAGERSURFACE_H
 #define CMS_VIDEOMANAGERSURFACE_H
 
+#include <QObject>
 #include <QList>
 #include <QLabel>
 #include <QVideoFrame>
@@ -44,11 +45,15 @@ public:
     ~VideoManagerSurface();
     QList<QVideoFrame::PixelFormat> supportedPixelFormats(QAbstractVideoBuffer::HandleType handleType) const;
     bool present(const QVideoFrame &frame);
+    void frameToProcess(cv::Mat);
 
 protected slots:
     void mousePressEvent(QMouseEvent *event);
+    void frameToGui(Point featurePosition);
 
 private:
+    bool draw_switch;
+    Point featurePosition;
     Settings &settings;
     CameraMouseController *controller;
     QLabel *imageLabel;
@@ -56,6 +61,7 @@ private:
     QSize frameSize;
     QSize scaledFrameSize;
     Point frameOffset;
+    QVideoFrame::PixelFormat format;
 };
 
 } // namespace CMS

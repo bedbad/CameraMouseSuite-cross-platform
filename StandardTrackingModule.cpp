@@ -45,6 +45,7 @@ Point StandardTrackingModule::track(cv::Mat &frame)
     std::vector<uchar> featuresFound;
     cv::Mat err;
     std::vector<cv::Point2f> currentTrackPoints;
+    cv::TermCriteria criteria = cv::TermCriteria((cv::TermCriteria::COUNT) + (cv::TermCriteria::EPS), 10, 0.03);
     cv::calcOpticalFlowPyrLK(prevGrey, grey, prevTrackPoints, currentTrackPoints,
                              featuresFound, err, winSize, 3, criteria);
 
@@ -60,6 +61,7 @@ Point StandardTrackingModule::track(cv::Mat &frame)
     prevGrey = grey;
     prevTrackPoints = currentTrackPoints;
 
+    emit positionUpdated(frame, imagePoint);
     return imagePoint;
 }
 
@@ -70,7 +72,7 @@ void StandardTrackingModule::setTrackPoint(cv::Mat &frame, Point point)
     imageSize = frame.size();
     if (point.X() < 0 || point.X() >= imageSize.width ||
         point.Y() < 0 || point.Y() >= imageSize.height)
-    {
+    {//TODO debug error
         return;
     }
 

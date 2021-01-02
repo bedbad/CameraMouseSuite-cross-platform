@@ -18,19 +18,22 @@
 // This code is partially based on http://stackoverflow.com/questions/26229633/use-of-qabstractvideosurface
 
 #include <QMouseEvent>
-
 #include "VideoManagerSurface.h"
 #include "asmOpenCV.h"
 #include "Point.h"
 #include "TemplateTrackingModule.h"
+#include <chrono>
 
 namespace CMS {
+
+using namespace std::chrono;
 
 VideoManagerSurface::VideoManagerSurface(Settings &settings, CameraMouseController *controller, QLabel *imageLabel, QObject *parent) :
     QAbstractVideoSurface(parent),
     settings(settings),
     controller(controller)
 {
+    this->draw_switch = false;
     this->imageLabel = imageLabel;
     supportedFormats = QList<QVideoFrame::PixelFormat>() << QVideoFrame::Format_RGB24
                                                          << QVideoFrame::Format_RGB32;
@@ -55,24 +58,35 @@ QList<QVideoFrame::PixelFormat> VideoManagerSurface::supportedPixelFormats(QAbst
     }
 }
 
+inline
+size_t get_current_time_milliseconds(){
+    return duration_cast<microseconds>(system_clock::now().time_since_epoch()).count();
+}
+
+void VideoManagerSurface::frameToGui(Point featurePosition){
+    draw_switch = true;
+    this->featurePosition = featurePosition;
+}
+
 bool VideoManagerSurface::present(const QVideoFrame &frame)
 {
 
-        QVideoFrame frameToProcess(frame);
+        QVideoFrame frameCopy(frame);
 
-        if(!frameToProcess.map(QAbstractVideoBuffer::ReadWrite))
+        if(!frameCopy.map(QAbstractVideoBuffer::ReadWrite))
         {
            setError(ResourceError);
            return false;
         }
+        format = frame.pixelFormat();
 
          // This is a shallow operation. it just refer the frame buffer
         QImage image(
-                frameToProcess.bits(),
-                frameToProcess.width(),
-                frameToProcess.height(),
-                frameToProcess.bytesPerLine(),
-                QVideoFrame::imageFormatFromPixelFormat(frameToProcess.pixelFormat()));
+                frameCopy.bits(),
+                frameCopy.width(),
+                frameCopy.height(),
+                frameCopy.bytesPerLine(),
+                QVideoFrame::imageFormatFromPixelFormat(frameCopy.pixelFormat()));
         // The kind of mirroring needed depends on the OS
         #ifdef Q_OS_LINUX
             image = image.mirrored(true, false);
@@ -82,30 +96,38 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
             image = image.mirrored(true, false);
         #endif
         cv::Mat mat = ASM::QImageToCvMat(image);
+        emit controller->processFrame(mat);
 
-        controller->processFrame(mat);
+        if(draw_switch){
+            controller->drawOnFrame(mat, featurePosition);
+            draw_switch = false;
 
-        image = ASM::cvMatToQImage(mat);
-        QImage scaledImage = image.scaled(imageLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+             image = QImage(mat.data,
+                           mat.cols,
+                           mat.rows,
+                           mat.step,
+                           QVideoFrame::imageFormatFromPixelFormat(format));
+        //        QImage scaledImage = image.scaled(imageLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        }
 
         if (frameSize.isEmpty())
         {
             settings.setFrameSize(Point(image.size()));
             frameSize = image.size();
-            scaledFrameSize = scaledImage.size();
-            frameOffset = Point(imageLabel->size().width() - scaledImage.width(), imageLabel->size().height() - scaledImage.height())/2;
+            scaledFrameSize = image.size();
+            frameOffset = Point(imageLabel->size().width() - image.width(), imageLabel->size().height() - image.height())/2;
         }
 
         // QPixmap::fromImage create a new buffer for the pixmap
-        imageLabel->setPixmap(QPixmap::fromImage(scaledImage));
-
-        // Release the data
-        frameToProcess.unmap();
+        imageLabel->setPixmap(QPixmap::fromImage(image));
 
         imageLabel->update();
+        // Release the data
+        frameCopy.unmap();
 
         return true;
 }
+
 
 void VideoManagerSurface::mousePressEvent(QMouseEvent *event)
 {
@@ -113,9 +135,9 @@ void VideoManagerSurface::mousePressEvent(QMouseEvent *event)
         return;
     double offX = frameOffset.X();
     double offY = frameOffset.Y();
-    double x = (double) frameSize.width() * (event->x() - offX) / scaledFrameSize.width();
-    double y = (double) frameSize.height() * (event->y() - offY) / scaledFrameSize.height();
-    controller->processClick(Point(x, y));
+    double x = (double) (event->x() - offX);
+    double y = (double) (event->y() - offY);
+    controller->processClick(Point(event->x(), event->y()));
 }
 
 } // namespace CMS

@@ -20,19 +20,22 @@
 
 #include <cv.h>
 
+#include <QObject>
 #include "Point.h"
 
 namespace CMS {
 
-class ITrackingModule
+class ITrackingModule : public QObject
 {
 public:
     virtual ~ITrackingModule();
-    virtual Point track(cv::Mat &frame) = 0;
-    virtual void setTrackPoint(cv::Mat &frame, Point point) = 0;
-    virtual void drawOnFrame(cv::Mat &frame, Point point);
     virtual cv::Size getImageSize() = 0;
     virtual bool isInitialized() = 0;
+signals:
+    virtual void positionUpdated(cv::Mat, Point point);
+protected slots:
+    virtual void setTrackPoint(cv::Mat &frame, Point point) = 0;
+    virtual Point track(cv::Mat &frame) = 0;
 };
 
 class TrackingModuleSanityCheck

@@ -22,7 +22,6 @@
 #include <QCamera>
 #include <QAbstractVideoSurface>
 
-#include <QTextToSpeech>
 
 #include "Settings.h"
 
@@ -63,8 +62,6 @@ private:
 
     void setupCameraWidgets();
     void setupSettingsWidgets();
-
-
 };
 
 } // namespace CMS
