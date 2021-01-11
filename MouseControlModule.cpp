@@ -14,7 +14,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include <stdexcept>
 
 #include "MouseControlModule.h"
@@ -61,21 +60,15 @@ bool MouseControlModule::isInitialized()
     return initialized;
 }
 
+void MouseControlModule::updateControl(){
+        controlling = !controlling;
+        if (controlling)
+        {
+            resetReference = true;
+        }
+}
 void MouseControlModule::update(Point featurePosition)
 {
-    while (keyboard->hasNextEvent())
-    {
-        KeyEvent event = keyboard->nextEvent();
-        if (event.getKey() == KEY_CONTROL && event.getState() == KEY_STATE_DOWN)
-        {
-            controlling = !controlling;
-            if (controlling)
-            {
-                resetReference = true;
-            }
-        }
-    }
-
     if (controlling && resetReference)
     {
         setFeatureReference(featurePosition);
@@ -105,34 +98,34 @@ void MouseControlModule::update(Point featurePosition)
 
     // Check if should click
     // TODO Should it be in another thread?
-    if (settings.isClickingEnabled())
-    {
-        int elapsedTime = time.elapsed();
-        int dwellTime = settings.getDwellTimeMillis();
+//    if (settings.isClickingEnabled())
+//    {
+//        int elapsedTime = time.elapsed();
+//        int dwellTime = settings.getDwellTimeMillis();
 
-        if (!withinRadius(dwellReference, pointerPos, settings.getDwellRadius()))
-        {
-            dwellReference = pointerPos;
-            time.restart();
-            prevLoopClicked = false;
-        }
+//        if (!withinRadius(dwellReference, pointerPos, settings.getDwellRadius()))
+//        {
+//            dwellReference = pointerPos;
+//            time.restart();
+//            prevLoopClicked = false;
+//        }
 
-        if (elapsedTime >= dwellTime && !prevLoopClicked)
-        {
-            mouse->click();
-            // TODO play sound
-            prevLoopClicked = true;
-        }
-        else if (elapsedTime >= dwellTime + 1000 && prevLoopClicked)
-        {
-            time.restart();
-            prevLoopClicked = false;
-        }
-    }
-    else
-    {
-        time.start();
-    }
+//        if (elapsedTime >= dwellTime && !prevLoopClicked)
+//        {
+//            mouse->click();
+//            // TODO play sound
+//            prevLoopClicked = true;
+//        }
+//        else if (elapsedTime >= dwellTime + 1000 && prevLoopClicked)
+//        {
+//            time.restart();
+//            prevLoopClicked = false;
+//        }
+//    }
+//    else
+//    {
+//        time.start();
+//    }
 }
 
 void MouseControlModule::restart()

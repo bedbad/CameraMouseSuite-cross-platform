@@ -27,8 +27,9 @@
 
 namespace CMS {
 
-class MouseControlModule
+class MouseControlModule: public QObject
 {
+    Q_OBJECT
 public:
     MouseControlModule(Settings &settings);
     ~MouseControlModule();
@@ -37,8 +38,11 @@ public:
     Point getPrevPos();
     bool isInitialized();
     void update(Point featurePosition);
+
     void restart();
 
+public slots:
+   void updateControl();
 private:
     Settings &settings;
     IMouse *mouse;

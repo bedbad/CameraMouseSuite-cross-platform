@@ -39,6 +39,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void keyPressEvent(QKeyEvent *ev);
+signals:
+    void gainControl();
 private slots:
     void updateSelectedCamera(QAction *action);
     void displayCameraError();

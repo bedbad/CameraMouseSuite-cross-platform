@@ -46,11 +46,20 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *ev){
+    if(ev->key() == Qt::Key_Control){
+        emit gainControl();
+    }
+}
 void MainWindow::setupCameraWidgets()
 {
     // Create video manager
-    ITrackingModule *trackingModule = new StandardTrackingModule(); // TODO magic constants are not nice :(
+    StandardTrackingModule *trackingModule = new StandardTrackingModule(); // TODO magic constants
+
+    setFocusPolicy( Qt::StrongFocus );
     MouseControlModule *controlModule = new MouseControlModule(settings);
+    connect(this, &MainWindow::gainControl, controlModule, &MouseControlModule::updateControl);
+
     CameraMouseController *controller = new CameraMouseController(settings, trackingModule, controlModule);
     videoManagerSurface = new VideoManagerSurface(settings, controller, ui->frameLabel, this);
 //    FeatureInitializationModule * features = new FeatureInitializationModule();
