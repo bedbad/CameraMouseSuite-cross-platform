@@ -19,12 +19,13 @@
 #define CMS_CAMERAMOUSECONTROLLER_H
 
 #include <cv.h>
-#include <QTime>
+#include <QTimer>
 #include <QThread>
 #include <QObject>
 
 #include "FeatureInitializationModule.h"
 #include "TrackingModule.h"
+#include "StandardTrackingModule.h" //update to multithreading
 #include "MouseControlModule.h"
 #include "Point.h"
 #include "Settings.h"
@@ -33,29 +34,31 @@ namespace CMS {
 
 class CameraMouseController : public QObject
 {
+    Q_OBJECT
 public:
-    CameraMouseController(Settings &settings, ITrackingModule *trackingModule, MouseControlModule *controlModule);
+    CameraMouseController(Settings &settings, StandardTrackingModule *trackingModule, MouseControlModule *controlModule);
     ~CameraMouseController();
     void processClick(Point position);
     bool isAutoDetectWorking();
     void drawOnFrame(cv::Mat &frame, Point point);
+    void sendFrame(cv::Mat&);
 
 protected slots:
     void frameFinished(cv::Mat, Point);
 
+signals:
+    void updateTrackPoint(cv::Mat, Point position);
+    void processFrame(cv::Mat frame);
+    void frameProcessed(Point);
+
 private:
     Settings &settings;
-    QThread trackingThread;
+    QThread* trackingThread;
     FeatureInitializationModule initializationModule;
     ITrackingModule *trackingModule;
     MouseControlModule *controlModule;
     cv::Mat prevFrame;
-    QTime featureCheckTimer;
-
-signals:
-    void updateTrackPoint(cv::Mat, Point position);
-    void processFrame(cv::Mat &frame);
-    void frameProcessed(Point);
+    QTimer featureCheckTimer;
 
 };
 

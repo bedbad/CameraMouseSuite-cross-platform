@@ -37,13 +37,13 @@ void TrackingModuleSanityCheck::checkInitialized()
         throw std::logic_error("No point set to be tracked");
 }
 
-void TrackingModuleSanityCheck::checkFrameNotEmpty(cv::Mat &frame)
+void TrackingModuleSanityCheck::checkFrameNotEmpty(const cv::Mat &frame)
 {
     if (frame.empty())
         throw std::invalid_argument("Frame is empty!");
 }
 
-void TrackingModuleSanityCheck::checkFrameSize(cv::Mat &frame)
+void TrackingModuleSanityCheck::checkFrameSize(const cv::Mat &frame)
 {
     if (frame.size() != trackingModule->getImageSize())
         throw std::invalid_argument("Invalid frame sizes");

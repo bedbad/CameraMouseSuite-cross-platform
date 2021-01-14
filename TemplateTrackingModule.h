@@ -26,10 +26,12 @@ class TemplateTrackingModule : public ITrackingModule
 {
 public:
     TemplateTrackingModule(double templateSizeRatio);
-    Point track(cv::Mat &frame);
     void setTrackPoint(cv::Mat &frame, Point point);
     cv::Size getImageSize();
     bool isInitialized();
+
+protected slots:
+    void process(cv::Mat frame);
 
 private:
     TrackingModuleSanityCheck sanityCheck;

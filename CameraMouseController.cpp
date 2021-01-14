@@ -21,23 +21,40 @@
 #endif
 
 #include "CameraMouseController.h"
+#include "StandardTrackingModule.h"
 #include "ImageProcessing.h"
 
+#include "qmetatype.h"
 namespace CMS {
 
-CameraMouseController::CameraMouseController(Settings &settings, ITrackingModule *trackingModule, MouseControlModule *controlModule) :
+CameraMouseController::CameraMouseController(Settings &settings, StandardTrackingModule *trackingModule, MouseControlModule *controlModule) :
     settings(settings), trackingModule(trackingModule), controlModule(controlModule)
 {
-    trackingModule->moveToThread(&trackingThread);
-    connect(&trackingThread, &QThread::finished, trackingModule, &QObject::deleteLater, Qt::QueuedConnection);
-    connect(this, SIGNAL(processFrame(cv::Mat)), trackingModule, SLOT(track(cv::Mat)), Qt::QueuedConnection);
-    connect(this, SIGNAL(updateTrackPoint(cv::Mat, Point)), trackingModule, SLOT(setTrackPoint(cv::Mat, Point)), Qt::QueuedConnection);
-    connect(trackingModule, SIGNAL(positionUpdated(cv::Mat, Point)), this, SLOT(frameFinished(cv::Mat, Point)), Qt::QueuedConnection);
-    trackingThread.start();
-    
-    featureCheckTimer.start();
+    trackingThread = new QThread();
+    trackingModule->moveToThread(trackingThread);
+
+    //Signaling:
+    //Part 1. Communication
+    qRegisterMetaType<cv::Mat>("cv::Mat");
+    qRegisterMetaType<Point>("Point");
+
+    connect(this, &CameraMouseController::processFrame, trackingModule, &StandardTrackingModule::process, Qt::QueuedConnection);
+    connect(this, &CameraMouseController::updateTrackPoint, trackingModule, &StandardTrackingModule::setTrackPoint, Qt::QueuedConnection);
+    connect(trackingModule, &StandardTrackingModule::positionUpdated, this, &CameraMouseController::frameFinished, Qt::QueuedConnection);
+    connect(trackingModule, &StandardTrackingModule::finished, trackingThread, &QThread::quit);
+    connect(trackingModule, &StandardTrackingModule::finished, trackingThread, &QObject::deleteLater);
+
+    trackingThread->start();
+    trackingThread->setPriority(QThread::Priority::NormalPriority);/*
+    connect(&featureCheckTimer, &QTimer::timeout, trackingModule, &StandardTrackingModule::onTimeout);*/
+    qDebug() << "Main Thred ID:" << QThread::currentThreadId();
+    featureCheckTimer.start(1000);
 }
 
+void CameraMouseController::sendFrame(cv::Mat& frame){
+    prevFrame = frame;
+    emit processFrame(frame.clone());
+}
 void CameraMouseController::drawOnFrame(cv::Mat &frame, Point point){
     float ratio = 0.03;
     int width = (int) (frame.size().width * ratio);
@@ -47,8 +64,7 @@ void CameraMouseController::drawOnFrame(cv::Mat &frame, Point point){
 }
 
 CameraMouseController::~CameraMouseController(){
-    trackingThread.wait();
-    trackingThread.quit();
+    delete trackingThread;
     delete controlModule;
 }
 
@@ -95,18 +111,16 @@ CameraMouseController::~CameraMouseController(){
 ////    }
 //}
 
-
 void CameraMouseController::frameFinished(cv::Mat mat, Point featurePosition){
-    controlModule->update(featurePosition);
-    emit frameProcessed(featurePosition);
+    if(trackingModule->isInitialized()){
+        controlModule->update(featurePosition);
+        emit frameProcessed(featurePosition);
+    }
 }
 
 void CameraMouseController::processClick(Point position){
-    if (!prevFrame.empty())
-    {
         emit updateTrackPoint(prevFrame, position);
         controlModule->restart();
-    }
 }
 
 bool CameraMouseController::isAutoDetectWorking(){

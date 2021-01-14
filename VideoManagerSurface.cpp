@@ -37,6 +37,7 @@ VideoManagerSurface::VideoManagerSurface(Settings &settings, CameraMouseControll
     this->imageLabel = imageLabel;
     supportedFormats = QList<QVideoFrame::PixelFormat>() << QVideoFrame::Format_RGB24
                                                          << QVideoFrame::Format_RGB32;
+    connect(controller, &CameraMouseController::frameProcessed, this , &VideoManagerSurface::frameToGui);
     connect(imageLabel, SIGNAL(mousePressed(QMouseEvent*)), this, SLOT(mousePressEvent(QMouseEvent*)));
 }
 
@@ -70,7 +71,6 @@ void VideoManagerSurface::frameToGui(Point featurePosition){
 
 bool VideoManagerSurface::present(const QVideoFrame &frame)
 {
-
         QVideoFrame frameCopy(frame);
 
         if(!frameCopy.map(QAbstractVideoBuffer::ReadWrite))
@@ -96,7 +96,7 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
             image = image.mirrored(true, false);
         #endif
         cv::Mat mat = ASM::QImageToCvMat(image);
-        emit controller->processFrame(mat);
+        controller->sendFrame(mat);
 
         if(draw_switch){
             controller->drawOnFrame(mat, featurePosition);
@@ -107,7 +107,6 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
                            mat.rows,
                            mat.step,
                            QVideoFrame::imageFormatFromPixelFormat(format));
-        //        QImage scaledImage = image.scaled(imageLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         }
 
         if (frameSize.isEmpty())
@@ -133,10 +132,10 @@ void VideoManagerSurface::mousePressEvent(QMouseEvent *event)
 {
     if (frameSize.isEmpty())
         return;
-    double offX = frameOffset.X();
-    double offY = frameOffset.Y();
-    double x = (double) (event->x() - offX);
-    double y = (double) (event->y() - offY);
+//    double offX = frameOffset.X();
+//    double offY = frameOffset.Y();
+//    double x = (double) (event->x() - offX);
+//    double y = (double) (event->y() - offY);
     controller->processClick(Point(event->x(), event->y()));
 }
 

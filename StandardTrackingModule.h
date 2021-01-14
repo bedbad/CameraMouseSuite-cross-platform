@@ -28,15 +28,21 @@ namespace CMS {
 
 class StandardTrackingModule : public ITrackingModule
 {
+    Q_OBJECT
 public:
     StandardTrackingModule();
-    Point track(cv::Mat &frame) override;
-    void setTrackPoint(cv::Mat &frame, Point point) override;
+    void setTrackPoint(cv::Mat frame, Point point) override;
     cv::Size getImageSize() override;
     bool isInitialized() override;
 
+public slots:
+    void process(cv::Mat frame) override;
+    void onTimeout(){
+         qDebug()<<"Tracking Timeout from thread: "<<QThread::currentThreadId();
+    }
 signals:
     void positionUpdated(cv::Mat, Point point);
+    void finished();
 private:
     TrackingModuleSanityCheck sanityCheck;
     bool initialized;

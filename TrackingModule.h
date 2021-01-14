@@ -21,21 +21,25 @@
 #include <cv.h>
 
 #include <QObject>
+#include <QtCore>
 #include "Point.h"
 
 namespace CMS {
 
 class ITrackingModule : public QObject
 {
+    Q_OBJECT
 public:
     virtual ~ITrackingModule();
     virtual cv::Size getImageSize() = 0;
     virtual bool isInitialized() = 0;
+
 signals:
-    virtual void positionUpdated(cv::Mat, Point point);
-protected slots:
-    virtual void setTrackPoint(cv::Mat &frame, Point point) = 0;
-    virtual Point track(cv::Mat &frame) = 0;
+    void positionUpdated(cv::Mat, Point point);
+public slots:
+    virtual void setTrackPoint(cv::Mat frame, Point point) = 0;
+    virtual void process(cv::Mat frame) = 0;
+
 };
 
 class TrackingModuleSanityCheck
@@ -43,8 +47,8 @@ class TrackingModuleSanityCheck
 public:
     TrackingModuleSanityCheck(ITrackingModule *trackingModule);
     void checkInitialized();
-    void checkFrameNotEmpty(cv::Mat &frame);
-    void checkFrameSize(cv::Mat &frame);
+    void checkFrameNotEmpty(const cv::Mat &frame);
+    void checkFrameSize(const cv::Mat &frame);
     void limitTPDelta(cv::Point2f &cur, cv::Point2f &last);
 
 private:

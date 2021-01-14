@@ -34,7 +34,7 @@ TemplateTrackingModule::TemplateTrackingModule(double templateSizeRatio) :
 {
 }
 
-Point TemplateTrackingModule::track(cv::Mat &frame)
+void TemplateTrackingModule::process(cv::Mat frame)
 {
     sanityCheck.checkInitialized();
     sanityCheck.checkFrameNotEmpty(frame);
@@ -61,7 +61,7 @@ Point TemplateTrackingModule::track(cv::Mat &frame)
 
     // Return center of matched region
     prevLoc = Point(matchLoc.x + fullTemplateSize.width/2, matchLoc.y + fullTemplateSize.height/2);
-    return prevLoc;
+
 }
 
 void TemplateTrackingModule::setTrackPoint(cv::Mat &frame, Point point)

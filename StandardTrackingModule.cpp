@@ -20,6 +20,7 @@
 
 #include "StandardTrackingModule.h"
 #include "asmOpenCV.h"
+#include <opencv2/highgui.hpp>
 
 namespace CMS {
 
@@ -32,40 +33,39 @@ StandardTrackingModule::StandardTrackingModule() :
 {
 }
 
-Point StandardTrackingModule::track(cv::Mat &frame)
+
+void StandardTrackingModule::process(cv::Mat frame)
 {
-    sanityCheck.checkInitialized();
-    sanityCheck.checkFrameNotEmpty(frame);
-    sanityCheck.checkFrameSize(frame);
+    if(!initialized)
+        return;
 
+//    sanityCheck.checkFrameNotEmpty(frame);
     cv::Mat grey = ASM::convertToGray(frame);
+    if(!prevGrey.empty()){
+        qDebug() <<"checking mat"<< prevGrey.size().width << " "<< prevGrey.size().height << " " << "\n";
+        std::vector<uchar> featuresFound;
+        cv::Mat err;
+        std::vector<cv::Point2f> currentTrackPoints;
+        cv::TermCriteria criteria = cv::TermCriteria((cv::TermCriteria::COUNT) + (cv::TermCriteria::EPS), 10, 0.03);
+        cv::calcOpticalFlowPyrLK(prevGrey, grey, prevTrackPoints, currentTrackPoints,
+                                 featuresFound, err, winSize, 3, criteria);
 
-    //SwapPoints(ref _current_track_points[0], ref _last_track_points[0]);
+        Point imagePoint;
 
-    std::vector<uchar> featuresFound;
-    cv::Mat err;
-    std::vector<cv::Point2f> currentTrackPoints;
-    cv::TermCriteria criteria = cv::TermCriteria((cv::TermCriteria::COUNT) + (cv::TermCriteria::EPS), 10, 0.03);
-    cv::calcOpticalFlowPyrLK(prevGrey, grey, prevTrackPoints, currentTrackPoints,
-                             featuresFound, err, winSize, 3, criteria);
+        sanityCheck.limitTPDelta(currentTrackPoints[0], prevTrackPoints[0]);
 
-    Point imagePoint;
-
-    sanityCheck.limitTPDelta(currentTrackPoints[0], prevTrackPoints[0]);
-
-    if (featuresFound[0])
-    {
-        imagePoint = Point(currentTrackPoints[0]);
+        if (featuresFound[0])
+        {
+            imagePoint = Point(currentTrackPoints[0]);
+        }
+        prevTrackPoints = currentTrackPoints;
+        emit positionUpdated(frame.clone(), imagePoint);
     }
 
     prevGrey = grey;
-    prevTrackPoints = currentTrackPoints;
-
-    emit positionUpdated(frame, imagePoint);
-    return imagePoint;
 }
 
-void StandardTrackingModule::setTrackPoint(cv::Mat &frame, Point point)
+void StandardTrackingModule::setTrackPoint(cv::Mat frame, Point point)
 {
     sanityCheck.checkFrameNotEmpty(frame);
 
@@ -80,7 +80,7 @@ void StandardTrackingModule::setTrackPoint(cv::Mat &frame, Point point)
 
     prevTrackPoints = std::vector<cv::Point2f>();
     prevTrackPoints.push_back(point.asCVPoint());
-    prevGrey = ASM::convertToGray(frame);
+    cv::Mat prevGrey = ASM::convertToGray(frame);
 }
 
 cv::Size StandardTrackingModule::getImageSize()
