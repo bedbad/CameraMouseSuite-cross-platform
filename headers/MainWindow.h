@@ -48,9 +48,9 @@ private slots:
     void setCamera(const QCameraInfo &cameraInfo);
     void updateDwellSpinBox(int dwellMillis);
     void updateDwellSlider(double dwellSecs);
-    void horizontalGainChanged(int horizontalGain);
-    void verticalGainChanged(int verticalGain);
-    void lockGainClicked(bool lock);
+//    void horizontalGainChanged(int horizontalGain);
+//    void verticalGainChanged(int verticalGain);
+//    void lockGainClicked(bool lock);
 
     // ------- Voice Control/ Text To speech Change--------------------------
 

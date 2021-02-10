@@ -14,13 +14,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include <qdebug.h>
 #include <opencv2/video/tracking.hpp>
 
 #include "StandardTrackingModule.h"
 #include "asmOpenCV.h"
 #include <opencv2/highgui.hpp>
+
+//!!! QT internals !!!
+#include <QThread>
 
 namespace CMS {
 
@@ -33,6 +35,13 @@ StandardTrackingModule::StandardTrackingModule() :
 {
 }
 
+//// *critical*
+//size_t getEventQueueSize(QThread* thread)
+//{
+//    auto threadData = QThreadData::get2(thread);
+//    QMutexLocker locker(&threadData->postEventList.mutex);
+//    return threadData->postEventList.size();
+//}
 
 void StandardTrackingModule::process(cv::Mat frame)
 {
@@ -51,7 +60,6 @@ void StandardTrackingModule::process(cv::Mat frame)
                                  featuresFound, err, winSize, 3, criteria);
 
         Point imagePoint;
-
         sanityCheck.limitTPDelta(currentTrackPoints[0], prevTrackPoints[0]);
 
         if (featuresFound[0])

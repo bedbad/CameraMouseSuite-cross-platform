@@ -16,7 +16,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-------------------------------------------------
 
-QT += core gui multimedia multimediawidgets
+QT += core core-private gui multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -49,7 +49,9 @@ mac {
 
 win32 {
     INCLUDEPATH += $$(OPENCV_INCLUDE) \
-                   $$(OPENCV_INCLUDE)/opencv
+                   $$(OPENCV_INCLUDE)/opencv \
+                   headers/ \
+                   forms/
     CONFIG(debug, debug|release) {
         LIBS += $$(OPENCV_DIR)/lib/*d.lib
         message(Debug configuration!)
@@ -67,18 +69,37 @@ win32 {
     LIBS += -lwinmm
 }
 
-SOURCES += *.cpp
+SOURCES += \
+    sources/CameraMouseController.cpp \
+    sources/ClickableLabel.cpp \
+    sources/FeatureInitializationModule.cpp \
+    sources/ImageProcessing.cpp \
+    sources/Keyboard.cpp \
+    sources/MainWindow.cpp \
+    sources/Monitor.cpp \
+    sources/Mouse.cpp \
+    sources/MouseControlModule.cpp \
+    sources/Point.cpp \
+    sources/Settings.cpp \
+    sources/StandardTrackingModule.cpp \
+    sources/TemplateTrackingModule.cpp \
+    sources/TrackingModule.cpp \
+    sources/VideoManagerSurface.cpp \
+    sources/main.cpp
 
-HEADERS  += *.h
+HEADERS  += headers/*.h \
 
-FORMS    += mainWindow.ui
+
+FORMS    += forms/*
 
 OTHER_FILES += \
     README.md \
     cascades/*.xml
 
 RESOURCES += \
-    icons.qrc
+    resources/*.qrc \
+    resources/images/lock-locked.png \
+    resources/images/lock-unlocked.png
 
 # Copy haar cascade files
 SRC = $${PWD}/cascades
@@ -103,4 +124,9 @@ export(copydata.commands)
 QMAKE_EXTRA_TARGETS += first copydata
 
 DISTFILES += \
-    TODO
+    BUILD \
+    TODO \
+    WORKSPACE \
+    qt.BUILD \
+    qt.bzl \
+    qt_configure.bzl

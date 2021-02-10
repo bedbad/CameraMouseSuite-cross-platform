@@ -96,36 +96,36 @@ void MouseControlModule::update(Point featurePosition)
     prevPointer = pointerPos;
     mouse->move(pointerPos);
 
-    // Check if should click
-    // TODO Should it be in another thread?
-//    if (settings.isClickingEnabled())
-//    {
-//        int elapsedTime = time.elapsed();
-//        int dwellTime = settings.getDwellTimeMillis();
+//     Check if should click
+//     TODO Should it be in another thread?
+    if (settings.isClickingEnabled())
+    {
+        int elapsedTime = time.elapsed();
+        int dwellTime = settings.getDwellTimeMillis();
 
-//        if (!withinRadius(dwellReference, pointerPos, settings.getDwellRadius()))
-//        {
-//            dwellReference = pointerPos;
-//            time.restart();
-//            prevLoopClicked = false;
-//        }
+        if (!withinRadius(dwellReference, pointerPos, settings.getDwellRadius()))
+        {
+            dwellReference = pointerPos;
+            time.restart();
+            prevLoopClicked = false;
+        }
 
-//        if (elapsedTime >= dwellTime && !prevLoopClicked)
-//        {
-//            mouse->click();
-//            // TODO play sound
-//            prevLoopClicked = true;
-//        }
-//        else if (elapsedTime >= dwellTime + 1000 && prevLoopClicked)
-//        {
-//            time.restart();
-//            prevLoopClicked = false;
-//        }
-//    }
-//    else
-//    {
-//        time.start();
-//    }
+        if (elapsedTime >= dwellTime && !prevLoopClicked)
+        {
+            mouse->click();
+            // TODO play sound
+            prevLoopClicked = true;
+        }
+        else if (elapsedTime >= dwellTime + 1000 && prevLoopClicked)
+        {
+            time.restart();
+            prevLoopClicked = false;
+        }
+    }
+    else
+    {
+        time.start();
+    }
 }
 
 void MouseControlModule::restart()

@@ -62,6 +62,7 @@ void MainWindow::setupCameraWidgets()
 
     CameraMouseController *controller = new CameraMouseController(settings, trackingModule, controlModule);
     videoManagerSurface = new VideoManagerSurface(settings, controller, ui->frameLabel, this);
+
 //    FeatureInitializationModule * features = new FeatureInitializationModule();
 
     // Create device selection menu
@@ -106,26 +107,26 @@ void MainWindow::setupSettingsWidgets()
     connect(ui->dwellSlider, SIGNAL(valueChanged(int)), this, SLOT(updateDwellSpinBox(int)));
     ui->dwellSpinBox->setValue(1.0);
 
-    // Mouse Movement
-    connect(ui->reverseHorizontalCheckBox, SIGNAL(toggled(bool)), &settings, SLOT(setReverseHorizontal(bool)));
-    ui->reverseHorizontalCheckBox->setChecked(settings.getReverseHorizontal());
+//    // Mouse Movement
+//    connect(ui->reverseHorizontalCheckBox, SIGNAL(toggled(bool)), &settings, SLOT(setReverseHorizontal(bool)));
+//    ui->reverseHorizontalCheckBox->setChecked(settings.getReverseHorizontal());
 
-    // Gain
-    connect(ui->horizontalGainSlider, SIGNAL(valueChanged(int)), &settings, SLOT(setHorizontalGain(int)));
-    connect(ui->horizontalGainSlider, SIGNAL(valueChanged(int)), this, SLOT(horizontalGainChanged(int)));
-    connect(ui->verticalGainSlider, SIGNAL(valueChanged(int)), &settings, SLOT(setVerticalGain(int)));
-    connect(ui->verticalGainSlider, SIGNAL(valueChanged(int)), this, SLOT(verticalGainChanged(int)));
-    connect(ui->lockGainButton, SIGNAL(toggled(bool)), this, SLOT(lockGainClicked(bool)));
-    ui->lockGainButton->setChecked(true);
-    settings.setHorizontalGain(ui->horizontalGainSlider->value());
-    settings.setVerticalGain(ui->verticalGainSlider->value());
+//    // Gain
+//    connect(ui->horizontalGainSlider, SIGNAL(valueChanged(int)), &settings, SLOT(setHorizontalGain(int)));
+//    connect(ui->horizontalGainSlider, SIGNAL(valueChanged(int)), this, SLOT(horizontalGainChanged(int)));
+//    connect(ui->verticalGainSlider, SIGNAL(valueChanged(int)), &settings, SLOT(setVerticalGain(int)));
+//    connect(ui->verticalGainSlider, SIGNAL(valueChanged(int)), this, SLOT(verticalGainChanged(int)));
+//    connect(ui->lockGainButton, SIGNAL(toggled(bool)), this, SLOT(lockGainClicked(bool)));
+//    ui->lockGainButton->setChecked(true);
+//    settings.setHorizontalGain(ui->horizontalGainSlider->value());
+//    settings.setVerticalGain(ui->verticalGainSlider->value());
 
-    // Smoothing
-    connect(ui->smoothingCheckBox, SIGNAL(toggled(bool)), ui->smoothingSlider, SLOT(setEnabled(bool)));
-    connect(ui->smoothingCheckBox, SIGNAL(toggled(bool)), &settings, SLOT(setEnableSmoothing(bool)));
-    connect(ui->smoothingSlider, SIGNAL(valueChanged(int)), &settings, SLOT(setDampingPercent(int)));
-    settings.setDampingPercent(ui->smoothingSlider->value());
-    ui->smoothingCheckBox->setChecked(true);
+//    // Smoothing
+//    connect(ui->smoothingCheckBox, SIGNAL(toggled(bool)), ui->smoothingSlider, SLOT(setEnabled(bool)));
+//    connect(ui->smoothingCheckBox, SIGNAL(toggled(bool)), &settings, SLOT(setEnableSmoothing(bool)));
+//    connect(ui->smoothingSlider, SIGNAL(valueChanged(int)), &settings, SLOT(setDampingPercent(int)));
+//    settings.setDampingPercent(ui->smoothingSlider->value());
+//    ui->smoothingCheckBox->setChecked(true);
 
     // Auto Detect Nose
     connect(ui->autoDetectNoseCheckBox, SIGNAL(toggled(bool)), &settings, SLOT(setAutoDetectNose(bool)));
@@ -166,20 +167,20 @@ void MainWindow::updateDwellSlider(double dwellSecs)
     ui->dwellSlider->setValue(dwellMillis);
 }
 
-void MainWindow::horizontalGainChanged(int horizontalGain)
-{
-    if (ui->lockGainButton->isChecked())
-        ui->verticalGainSlider->setValue(horizontalGain);
-}
-void MainWindow::verticalGainChanged(int verticalGain)
-{
-    if (ui->lockGainButton->isChecked())
-        ui->horizontalGainSlider->setValue(verticalGain);
-}
-void MainWindow::lockGainClicked(bool lock)
-{
-    if (lock)
-        ui->verticalGainSlider->setValue(ui->horizontalGainSlider->value());
-}
+//void MainWindow::horizontalGainChanged(int horizontalGain)
+//{
+//    if (ui->lockGainButton->isChecked())
+//        ui->verticalGainSlider->setValue(horizontalGain);
+//}
+//void MainWindow::verticalGainChanged(int verticalGain)
+//{
+//    if (ui->lockGainButton->isChecked())
+//        ui->horizontalGainSlider->setValue(verticalGain);
+//}
+//void MainWindow::lockGainClicked(bool lock)
+//{
+//    if (lock)
+//        ui->verticalGainSlider->setValue(ui->horizontalGainSlider->value());
+//}
 
 } // namespace CMS

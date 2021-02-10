@@ -72,6 +72,7 @@ void VideoManagerSurface::frameToGui(Point featurePosition){
 bool VideoManagerSurface::present(const QVideoFrame &frame)
 {
         QVideoFrame frameCopy(frame);
+        stampFrame();
 
         if(!frameCopy.map(QAbstractVideoBuffer::ReadWrite))
         {
@@ -98,6 +99,7 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
         cv::Mat mat = ASM::QImageToCvMat(image);
         controller->sendFrame(mat);
 
+
         if(draw_switch){
             controller->drawOnFrame(mat, featurePosition);
             draw_switch = false;
@@ -107,6 +109,8 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
                            mat.rows,
                            mat.step,
                            QVideoFrame::imageFormatFromPixelFormat(format));
+
+             drawText(image, "REAL FPS:"+std::to_string(eval_fps()));
         }
 
         if (frameSize.isEmpty())
@@ -119,7 +123,6 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
 
         // QPixmap::fromImage create a new buffer for the pixmap
         imageLabel->setPixmap(QPixmap::fromImage(image));
-
         imageLabel->update();
         // Release the data
         frameCopy.unmap();

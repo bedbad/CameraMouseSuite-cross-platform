@@ -24,6 +24,7 @@
 #include "StandardTrackingModule.h"
 #include "ImageProcessing.h"
 
+#include <private/qthread_p.h>
 #include "qmetatype.h"
 namespace CMS {
 
@@ -45,10 +46,9 @@ CameraMouseController::CameraMouseController(Settings &settings, StandardTrackin
     connect(trackingModule, &StandardTrackingModule::finished, trackingThread, &QObject::deleteLater);
 
     trackingThread->start();
-    trackingThread->setPriority(QThread::Priority::NormalPriority);/*
+    trackingThread->setPriority(QThread::Priority::LowestPriority);/*
     connect(&featureCheckTimer, &QTimer::timeout, trackingModule, &StandardTrackingModule::onTimeout);*/
-    qDebug() << "Main Thred ID:" << QThread::currentThreadId();
-    featureCheckTimer.start(1000);
+    qDebug() << "Main Thread ID:" << QThread::currentThreadId();
 }
 
 void CameraMouseController::sendFrame(cv::Mat& frame){
