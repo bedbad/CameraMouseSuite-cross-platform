@@ -38,7 +38,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-/*
     void keyPressEvent(QKeyEvent *ev);
 signals:
     void gainControl();
@@ -56,16 +55,15 @@ private slots:
 
     // ------- Voice Control/ Text To Speech Change--------------------------
 
-*/
 private:
     Ui::MainWindow *ui;
-    /*QCamera *camera;
+    QCamera *camera;
     QAbstractVideoSurface *videoManagerSurface;
     Settings settings;
 
     void setupCameraWidgets();
     void setupSettingsWidgets();
-*/
+
 };
 
 } // namespace CMS
