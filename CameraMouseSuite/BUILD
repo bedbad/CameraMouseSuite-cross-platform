@@ -8,7 +8,7 @@ qt_resource(
 qt_ui_library(
     name = "forms",
     ui = "forms/mainWindow.ui",
-	deps = ["@qt//:qt_widgets"],
+    deps = ["@qt//:qt_widgets"],
 )
 
 cc_library(
@@ -26,6 +26,7 @@ cc_library(
         "@mediapipe//mediapipe/framework/port:status",
         "@mediapipe//mediapipe/graphs/face_mesh:desktop_live_calculators",
     ],
+    copts = ["/std:c++17"],
 )
 
 qt_cc_library(
@@ -40,6 +41,8 @@ qt_cc_library(
         ":forms",
         ],
         includes = ["headers/", "resources/"],
+        copts = ["/std:c++17"],
+        linkopts = ['user32.lib'],
 )
 
 cc_binary(
@@ -55,4 +58,6 @@ cc_binary(
         ":resources",
         ":mediapipe_lib",
     ],
+    copts = ["/std:c++17"],
+    linkopts = ['user32.lib'],
 )

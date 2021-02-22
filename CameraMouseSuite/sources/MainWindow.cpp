@@ -46,7 +46,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-/*
+
 void MainWindow::keyPressEvent(QKeyEvent *ev){
     if(ev->key() == Qt::Key_Control){
         emit gainControl();
@@ -185,4 +185,3 @@ void MainWindow::updateDwellSlider(double dwellSecs)
 //}
 
 } // namespace CMS
-*/
