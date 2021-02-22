@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "qpixmap": "cpp",
+        "qmutex": "cpp",
+        "qtime": "cpp",
+        "qobject": "cpp",
+        "qthread": "cpp",
+        "qdir": "cpp",
+        "qdebug": "cpp"
+    }
+}

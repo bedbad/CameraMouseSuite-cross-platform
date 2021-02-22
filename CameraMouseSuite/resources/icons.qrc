@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="images">
+        <file>./images/lock-locked.png</file>
+        <file>./images/lock-unlocked.png</file>
+    </qresource>
+</RCC>
