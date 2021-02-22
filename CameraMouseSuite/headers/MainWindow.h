@@ -19,8 +19,8 @@
 #define MAINWINDOW_H
 
 #include <QtWidgets/QMainWindow>
-//#include <QCamera>
-//#include <QAbstractVideoSurface>
+#include <QtMultimedia/QCamera>
+#include <QtMultimedia/QAbstractVideoSurface>
 
 
 #include "Settings.h"

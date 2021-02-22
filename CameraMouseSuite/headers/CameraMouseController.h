@@ -18,7 +18,7 @@
 #ifndef CMS_CAMERAMOUSECONTROLLER_H
 #define CMS_CAMERAMOUSECONTROLLER_H
 
-#include <cv.h>
+#include "opencv/cv.h"
 #include <QtCore/QTimer>
 #include <QtCore/QThread>
 #include <QtCore/QObject>

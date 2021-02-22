@@ -24,8 +24,9 @@
 #include "StandardTrackingModule.h"
 #include "ImageProcessing.h"
 
-#include <private/qthread_p.h>
-#include "qmetatype.h"
+#include <QtCore/QThread>
+#include <QtCore/QMetaType>
+
 namespace CMS {
 
 CameraMouseController::CameraMouseController(Settings &settings, StandardTrackingModule *trackingModule, MouseControlModule *controlModule) :

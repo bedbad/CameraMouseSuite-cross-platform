@@ -33,8 +33,8 @@
 
 #include <chrono>
 #include <algorithm>
-#include <QPen>
-#include <QPainter>
+#include <QtGui/QPen>
+#include <QtGui/QPainter>
 
 constexpr double c_billion = 1000000000.0;
 constexpr uint8_t fps_smooth_count = 30;

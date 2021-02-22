@@ -32,7 +32,7 @@
 #elif defined Q_OS_WIN
 #include <queue>
 #include <Windows.h>
-#include <QMutex>
+#include <QtCore/QMutex>
 #include <shobjidl.h>
 #elif defined Q_OS_MAC
 #else

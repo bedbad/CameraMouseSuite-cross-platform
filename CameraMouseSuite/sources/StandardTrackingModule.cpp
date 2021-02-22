@@ -14,7 +14,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <qdebug.h>
+#include <QtCore/QDebug>
 #include <opencv2/video/tracking.hpp>
 
 #include "StandardTrackingModule.h"
@@ -22,7 +22,7 @@
 #include <opencv2/highgui.hpp>
 
 //!!! QT internals !!!
-#include <QThread>
+#include <QtCore/QThread>
 
 namespace CMS {
 

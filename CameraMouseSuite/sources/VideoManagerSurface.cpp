@@ -17,7 +17,7 @@
 
 // This code is partially based on http://stackoverflow.com/questions/26229633/use-of-qabstractvideosurface
 
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 #include "VideoManagerSurface.h"
 #include "asmOpenCV.h"
 #include "Point.h"

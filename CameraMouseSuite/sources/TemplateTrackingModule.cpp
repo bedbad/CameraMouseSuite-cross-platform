@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QObject>
+#include <QtCore/QObject>
 #if defined(Q_OS_LINUX) || defined(Q_OS_WIN32)
 #include <opencv2/imgproc.hpp>
 #endif

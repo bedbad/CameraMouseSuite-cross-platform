@@ -34,6 +34,7 @@ qt_cc_library(
         hdrs = glob(["headers/*.h"]),
         deps = [
         "@qt//:qt_core",
+        "@qt//:qt_multimedia",
         ":mediapipe_lib",
         "@qt//:qt_widgets",
         ":forms",
@@ -46,7 +47,8 @@ cc_binary(
     srcs = glob(["sources/main.cpp"]),
     includes = glob(["headers/*.h"]),
     deps = [
-        "@qt//:qt_core",
+        "@qt//:qt_core", 
+        "@qt//:qt_multimedia",
         "@qt//:qt_widgets",
         ":forms",
         ":library",
