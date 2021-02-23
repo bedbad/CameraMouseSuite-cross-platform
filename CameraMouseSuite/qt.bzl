@@ -88,13 +88,17 @@ def qt_resource(name, files, **kwargs):
     # every resource cc_library that is linked into the same binary needs a
     # unique 'name'.
     rsrc_name = native.package_name().replace("/", "_") + "_" + name
-
+    qrc_path = qrc_file if len(qrc_file.split('/')) >= 2 else "%s/%s" % (native.package_name(), qrc_file)
     outfile = name + "_gen.cpp"
+    outfile1 = name + "_gen.rcc"
     native.genrule(
         name = name + "_gen",
         srcs = [qrc_file] + files,
         outs = [outfile],
-        cmd = "cp $(location %s) . && rcc --name %s --output $(OUTS) %s" % (qrc_file, rsrc_name, qrc_file),
+        cmd = "cp $(location %s) . && rcc --binary %s -o %s && rcc %s --name %s -o $(OUTS)" % 
+	  (qrc_file,
+           qrc_file, outfile1,
+           qrc_file, name),
     )
     cc_library(
         name = name,

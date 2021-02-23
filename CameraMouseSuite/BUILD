@@ -42,7 +42,7 @@ qt_cc_library(
         ],
         includes = ["headers/", "resources/"],
         copts = ["/std:c++17"],
-        linkopts = ['user32.lib'],
+	linkopts = ["user32.lib", "Winmm.lib", "gflags.lib"],
 )
 
 cc_binary(
@@ -59,5 +59,5 @@ cc_binary(
         ":mediapipe_lib",
     ],
     copts = ["/std:c++17"],
-    linkopts = ['user32.lib'],
+    linkstatic = 0,
 )
