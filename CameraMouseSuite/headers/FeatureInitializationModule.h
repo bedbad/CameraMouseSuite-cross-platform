@@ -19,9 +19,8 @@
 #define CMS_FEATUREINITIALIZATIONMODULE_H
 
 #include <QtCore/QObject>
-#if defined(Q_OS_LINUX) || defined(Q_OS_WIN32)
 #include <opencv2/opencv.hpp>
-#endif
+#include <opencv2/objdetect.hpp>
 
 #include "opencv/cv.h"
 #include <vector>

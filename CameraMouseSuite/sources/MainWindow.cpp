@@ -39,9 +39,9 @@ MainWindow::MainWindow(QWidget *parent) :
     settings(this)
 {
     ui->setupUi(this);
-    //setWindowTitle(tr("CameraMouseSuite"));
-    //setupCameraWidgets();
-    //setupSettingsWidgets();
+    setWindowTitle(tr("CameraMouseSuite"));
+    setupCameraWidgets();
+    setupSettingsWidgets();
 }
 
 MainWindow::~MainWindow()
@@ -133,8 +133,8 @@ void MainWindow::setupSettingsWidgets()
 //    ui->smoothingCheckBox->setChecked(true);
 
     // Auto Detect Nose
-    connect(ui->autoDetectNoseCheckBox, SIGNAL(toggled(bool)), &settings, SLOT(setAutoDetectNose(bool)));
-    ui->autoDetectNoseCheckBox->setChecked(settings.isAutoDetectNoseEnabled());
+    //connect(ui->autoDetectNoseCheckBox, SIGNAL(toggled(bool)), &settings, SLOT(setAutoDetectNose(bool)));
+    //ui->autoDetectNoseCheckBox->setChecked(settings.isAutoDetectNoseEnabled());
 }
 void MainWindow::updateSelectedCamera(QAction *action)
 {

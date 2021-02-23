@@ -59,5 +59,5 @@ cc_binary(
         ":mediapipe_lib",
     ],
     copts = ["-std=c++17"],
-    linkopts = ['-lX11'],
+    linkopts = ['-lX11', '-L/usr/local/lib -lopencv_objdetect'],
 )
