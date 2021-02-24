@@ -36,13 +36,14 @@ qt_cc_library(
         deps = [
         "@qt//:qt_core",
         "@qt//:qt_multimedia",
+        "@qt//:qt_multimediawidgets",
         ":mediapipe_lib",
         "@qt//:qt_widgets",
         ":forms",
         ],
         includes = ["headers/", "resources/"],
         copts = ["/std:c++17"],
-	linkopts = ["user32.lib", "Winmm.lib", "gflags.lib"],
+	linkopts = ["user32.lib", "Winmm.lib"],
 )
 
 cc_binary(
@@ -52,6 +53,7 @@ cc_binary(
     deps = [
         "@qt//:qt_core", 
         "@qt//:qt_multimedia",
+        "@qt//:qt_multimediawidgets",
         "@qt//:qt_widgets",
         ":forms",
         ":library",
@@ -59,5 +61,4 @@ cc_binary(
         ":mediapipe_lib",
     ],
     copts = ["/std:c++17"],
-    linkstatic = 0,
 )

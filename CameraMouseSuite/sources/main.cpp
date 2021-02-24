@@ -17,12 +17,26 @@
 
 #include "MainWindow.h"
 #include <QtWidgets/QApplication>
+#include <QtMultimedia/QCamera>
+#include <QtMultimediaWidgets/QCameraViewfinder>
+
+
+
 
 int main(int argc, char *argv[])
 {
+    QApplication app(argc, argv);
+
+    QCamera camera;
+    QCameraViewfinder viewfinder;
+    viewfinder.show();
+    camera.setViewfinder(&viewfinder);
+    camera.start();
+    return app.exec();
+    /*
     QApplication a(argc, argv);
     CMS::MainWindow w;
     w.show();
 
-    return a.exec();
+    return a.exec();*/
 }
