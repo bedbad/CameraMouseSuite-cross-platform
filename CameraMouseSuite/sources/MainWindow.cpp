@@ -87,6 +87,8 @@ void MainWindow::setupCameraWidgets()
     setCamera(QCameraInfo::defaultCamera());
     if (!controller->isAutoDetectWorking()) ui->autoDetectNoseCheckBox->setVisible(false);
 }
+
+
 void MainWindow::setupSettingsWidgets()
 {
 #if defined (Q_OS_WIN)
@@ -152,10 +154,10 @@ void MainWindow::setCamera(const QCameraInfo &cameraInfo)
     camera = new QCamera(cameraInfo);
 
     connect(camera, SIGNAL(error(QCamera::Error)), this, SLOT(displayCameraError()));
+    
     camera->setViewfinder(videoManagerSurface);
 
     camera->start();
-
     camera->setCaptureMode(QCamera::CaptureViewfinder);
     camera->searchAndLock();
 }

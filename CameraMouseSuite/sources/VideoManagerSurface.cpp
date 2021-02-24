@@ -24,6 +24,20 @@
 #include "TemplateTrackingModule.h"
 #include <chrono>
 
+#include <QtCore/QDebug>
+
+
+#include "mediapipe/framework/calculator_framework.h"
+#include "mediapipe/framework/formats/image_frame.h"
+#include "mediapipe/framework/formats/image_frame_opencv.h"
+#include "mediapipe/framework/port/file_helpers.h"
+#include "mediapipe/framework/port/opencv_highgui_inc.h"
+#include "mediapipe/framework/port/opencv_imgproc_inc.h"
+#include "mediapipe/framework/port/opencv_video_inc.h"
+#include "mediapipe/framework/port/parse_text_proto.h"
+#include "mediapipe/framework/port/status.h"
+
+DEFINE_string(calculator_graph_config_file, "../mediapipe/mediapipe/graphs/face_mesh/face_mesh_desktop_live.pbtxt", "");
 namespace CMS {
 
 using namespace std::chrono;
@@ -36,9 +50,13 @@ VideoManagerSurface::VideoManagerSurface(Settings &settings, CameraMouseControll
     this->draw_switch = false;
     this->imageLabel = imageLabel;
     supportedFormats = QList<QVideoFrame::PixelFormat>() << QVideoFrame::Format_RGB24
-                                                         << QVideoFrame::Format_RGB32;
+                                                         << QVideoFrame::Format_RGB32
+                                                         << QVideoFrame::Format_ARGB32
+                                                         << QVideoFrame::Format_CameraRaw;
+
     connect(controller, &CameraMouseController::frameProcessed, this , &VideoManagerSurface::frameToGui);
     connect(imageLabel, SIGNAL(mousePressed(QMouseEvent*)), this, SLOT(mousePressEvent(QMouseEvent*)));
+
 }
 
 VideoManagerSurface::~VideoManagerSurface()
@@ -73,8 +91,7 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
 {
         QVideoFrame frameCopy(frame);
         stampFrame();
-
-        if(!frameCopy.map(QAbstractVideoBuffer::ReadWrite))
+        if(!frameCopy.map(QAbstractVideoBuffer::ReadOnly))
         {
            setError(ResourceError);
            return false;
@@ -88,6 +105,7 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
                 frameCopy.height(),
                 frameCopy.bytesPerLine(),
                 QVideoFrame::imageFormatFromPixelFormat(frameCopy.pixelFormat()));
+
         // The kind of mirroring needed depends on the OS
         #ifdef Q_OS_LINUX
             image = image.mirrored(true, false);
@@ -97,6 +115,7 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
             image = image.mirrored(true, false);
         #endif
         cv::Mat mat = ASM::QImageToCvMat(image);
+
         controller->sendFrame(mat);
 
 
@@ -127,6 +146,8 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
         // Release the data
         frameCopy.unmap();
 
+
+
         return true;
 }
 
@@ -143,4 +164,5 @@ void VideoManagerSurface::mousePressEvent(QMouseEvent *event)
 }
 
 } // namespace CMS
+
 

@@ -42,7 +42,7 @@ qt_cc_library(
         ],
         includes = ["headers/", "resources/"],
         copts = ["-std=c++17"],
-        linkopts = ['-lX11'],
+        linkopts = ['-lX11', '-L/usr/lib/x86_64-linux-gnu -lgstreamer-1.0',  '-L/usr/lib/x86_64-linux-gnu -lglib-2.0', '-L/usr/lib/x86_64-linux-gnu -lgobject-2.0',], 
 )
 
 cc_binary(
@@ -59,5 +59,5 @@ cc_binary(
         ":mediapipe_lib",
     ],
     copts = ["-std=c++17"],
-    linkopts = ['-lX11', '-L/usr/local/lib -lopencv_objdetect'],
+    linkopts = ['-lX11', '-L/usr/local/lib -lopencv_objdetect', '-L/usr/local/lib -lopencv_imgcodecs',  '-L/usr/lib/x86_64-linux-gnu -lgstreamer-1.0',  '-L/usr/lib/x86_64-linux-gnu -lglib-2.0', '-L/usr/lib/x86_64-linux-gnu -lgobject-2.0',],
 )
