@@ -17,9 +17,14 @@
 
 #include "MainWindow.h"
 #include <QtWidgets/QApplication>
+#include "mediapipe/framework/port/commandlineflags.h"
+#include "mediapipe/framework/port/parse_text_proto.h"
 
 int main(int argc, char *argv[])
 {
+    google::InitGoogleLogging(argv[0]);
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
+
     QApplication a(argc, argv);
     CMS::MainWindow w;
     w.show();

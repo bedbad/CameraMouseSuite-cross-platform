@@ -50,6 +50,7 @@ class VideoManagerSurface : public QAbstractVideoSurface
 public:
     VideoManagerSurface(Settings &settings, CameraMouseController *controller, QLabel *imageLabel, QObject *parent = 0);
     ~VideoManagerSurface();
+
     QList<QVideoFrame::PixelFormat> supportedPixelFormats(QAbstractVideoBuffer::HandleType handleType) const;
     bool present(const QVideoFrame &frame);
     void frameToProcess(cv::Mat);
@@ -72,6 +73,7 @@ public:
     }
 
     std::deque<std::chrono::duration<double>> frame_timestamps;
+    
 protected slots:
     void mousePressEvent(QMouseEvent *event);
     void frameToGui(Point featurePosition);

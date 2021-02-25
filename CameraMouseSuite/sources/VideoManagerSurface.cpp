@@ -27,17 +27,6 @@
 #include <QtCore/QDebug>
 
 
-#include "mediapipe/framework/calculator_framework.h"
-#include "mediapipe/framework/formats/image_frame.h"
-#include "mediapipe/framework/formats/image_frame_opencv.h"
-#include "mediapipe/framework/port/file_helpers.h"
-#include "mediapipe/framework/port/opencv_highgui_inc.h"
-#include "mediapipe/framework/port/opencv_imgproc_inc.h"
-#include "mediapipe/framework/port/opencv_video_inc.h"
-#include "mediapipe/framework/port/parse_text_proto.h"
-#include "mediapipe/framework/port/status.h"
-
-DEFINE_string(calculator_graph_config_file, "../mediapipe/mediapipe/graphs/face_mesh/face_mesh_desktop_live.pbtxt", "");
 namespace CMS {
 
 using namespace std::chrono;
@@ -164,5 +153,3 @@ void VideoManagerSurface::mousePressEvent(QMouseEvent *event)
 }
 
 } // namespace CMS
-
-

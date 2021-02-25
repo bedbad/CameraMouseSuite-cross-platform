@@ -143,6 +143,7 @@ namespace ASM {
        }
        return gray;
    }
+   
 }
 
 #endif // __ASM_OPENCV_H__
