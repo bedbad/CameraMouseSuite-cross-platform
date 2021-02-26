@@ -38,11 +38,11 @@
 
 constexpr double c_billion = 1000000000.0;
 constexpr uint8_t fps_smooth_count = 30;
+class FaceMesh;
 
 namespace CMS {
 
 // TODO I think this class has too many resposibilities
-
 class VideoManagerSurface : public QAbstractVideoSurface
 {
     Q_OBJECT
@@ -82,6 +82,9 @@ protected slots:
         if(frame_timestamps.size() > fps_smooth_count)
             frame_timestamps.pop_front();
     }
+
+public slots:
+    void showMesh(const QImage &);
 private:
     bool draw_switch;
     Point featurePosition;
@@ -93,6 +96,7 @@ private:
     QSize scaledFrameSize;
     Point frameOffset;
     QVideoFrame::PixelFormat format;
+    FaceMesh *faceMesh;
 };
 
 } // namespace CMS

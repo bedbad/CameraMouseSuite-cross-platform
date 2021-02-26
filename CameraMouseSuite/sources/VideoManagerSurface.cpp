@@ -25,6 +25,7 @@
 #include <chrono>
 
 #include <QtCore/QDebug>
+#include "facemesh.h"
 
 
 namespace CMS {
@@ -45,6 +46,10 @@ VideoManagerSurface::VideoManagerSurface(Settings &settings, CameraMouseControll
 
     connect(controller, &CameraMouseController::frameProcessed, this , &VideoManagerSurface::frameToGui);
     connect(imageLabel, SIGNAL(mousePressed(QMouseEvent*)), this, SLOT(mousePressEvent(QMouseEvent*)));
+
+    faceMesh = new FaceMesh();
+    connect(faceMesh, SIGNAL(emitPixel(const QImage&)), this, SLOT(showMesh(const QImage)));
+    faceMesh->start();
 
 }
 
@@ -106,7 +111,7 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
         cv::Mat mat = ASM::QImageToCvMat(image);
 
         controller->sendFrame(mat);
-
+        faceMesh->setFrame(mat);
 
         if(draw_switch){
             controller->drawOnFrame(mat, featurePosition);
@@ -130,8 +135,8 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
         }
 
         // QPixmap::fromImage create a new buffer for the pixmap
-        imageLabel->setPixmap(QPixmap::fromImage(image));
-        imageLabel->update();
+        //imageLabel->setPixmap(QPixmap::fromImage(image));
+        //imageLabel->update();
         // Release the data
         frameCopy.unmap();
 
@@ -150,6 +155,12 @@ void VideoManagerSurface::mousePressEvent(QMouseEvent *event)
 //    double x = (double) (event->x() - offX);
 //    double y = (double) (event->y() - offY);
     controller->processClick(Point(event->x(), event->y()));
+}
+
+void VideoManagerSurface :: showMesh(const QImage &img)
+{
+    imageLabel->setPixmap(QPixmap::fromImage(img));
+    imageLabel->update();
 }
 
 } // namespace CMS
