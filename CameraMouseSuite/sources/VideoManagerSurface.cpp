@@ -113,7 +113,7 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
         controller->sendFrame(mat);
         faceMesh->setFrame(mat);
 
-        if(draw_switch){
+        /*if(draw_switch){
             controller->drawOnFrame(mat, featurePosition);
             draw_switch = false;
 
@@ -132,7 +132,7 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
             frameSize = image.size();
             scaledFrameSize = image.size();
             frameOffset = Point(imageLabel->size().width() - image.width(), imageLabel->size().height() - image.height())/2;
-        }
+        }*/
 
         // QPixmap::fromImage create a new buffer for the pixmap
         //imageLabel->setPixmap(QPixmap::fromImage(image));
@@ -159,7 +159,30 @@ void VideoManagerSurface::mousePressEvent(QMouseEvent *event)
 
 void VideoManagerSurface :: showMesh(const QImage &img)
 {
-    imageLabel->setPixmap(QPixmap::fromImage(img));
+    QImage image(img);
+    if(draw_switch){
+            cv::Mat mat = ASM::QImageToCvMat(img);
+            controller->drawOnFrame(mat, featurePosition);
+            draw_switch = false;
+
+             image = QImage(mat.data,
+                           mat.cols,
+                           mat.rows,
+                           mat.step,
+                           QVideoFrame::imageFormatFromPixelFormat(format));
+
+             drawText(image, "REAL FPS:"+std::to_string(eval_fps()));
+        }
+
+        if (frameSize.isEmpty())
+        {
+            settings.setFrameSize(Point(image.size()));
+            frameSize = image.size();
+            scaledFrameSize = image.size();
+            frameOffset = Point(imageLabel->size().width() - image.width(), imageLabel->size().height() - image.height())/2;
+        }
+
+    imageLabel->setPixmap(QPixmap::fromImage(image));
     imageLabel->update();
 }
 

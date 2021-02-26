@@ -50,7 +50,7 @@ mediapipe::Status FaceMesh :: RunMPPGraph()
 
                 // Convert back to opencv for display or saving.
                 cv::Mat output_frame_mat = mediapipe::formats::MatView(&output_frame);
-                cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2GRAY);
+                cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
                 
                 QImage img;
                 if (output_frame_mat.channels()== 3)
