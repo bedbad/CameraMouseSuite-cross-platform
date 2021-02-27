@@ -26,7 +26,7 @@ cc_library(
         "@mediapipe//mediapipe/framework/port:status",
         "@mediapipe//mediapipe/graphs/face_mesh:desktop_live_calculators",
     ],
-    copts = ["-std=c++17"],
+    copts = ["/std:c++17"],
 )
 
 qt_cc_library(
@@ -41,8 +41,8 @@ qt_cc_library(
         ":forms",
         ],
         includes = ["headers/", "resources/"],
-        copts = ["-std=c++17"],
-        linkopts = ['-lX11', '-L/usr/lib/x86_64-linux-gnu -lgstreamer-1.0',  '-L/usr/lib/x86_64-linux-gnu -lglib-2.0', '-L/usr/lib/x86_64-linux-gnu -lgobject-2.0',], 
+        copts = ["/std:c++17"],
+        linkopts = ["user32.lib", "Winmm.lib"], 
 )
 
 cc_binary(
@@ -58,6 +58,5 @@ cc_binary(
         ":resources",
         ":mediapipe_lib",
     ],
-    copts = ["-std=c++17"],
-    linkopts = ['-lX11', '-L/usr/local/lib -lopencv_objdetect', '-L/usr/local/lib -lopencv_imgcodecs',  '-L/usr/lib/x86_64-linux-gnu -lgstreamer-1.0',  '-L/usr/lib/x86_64-linux-gnu -lglib-2.0', '-L/usr/lib/x86_64-linux-gnu -lgobject-2.0',],
+    copts = ["/std:c++17"],
 )

@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "qvideoframe": "cpp",
-        "qabstractvideosurface": "cpp",
-        "qlabel": "cpp"
-    }
-}

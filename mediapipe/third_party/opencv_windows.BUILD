@@ -5,7 +5,7 @@ licenses(["notice"])  # BSD license
 
 exports_files(["LICENSE"])
 
-OPENCV_VERSION = "3410"  # 3.4.10
+OPENCV_VERSION = "451"  # 3.4.10
 
 # The following build rule assumes that the executable "opencv-3.4.10-vc14_vc15.exe"
 # is downloaded and the files are extracted to local.
