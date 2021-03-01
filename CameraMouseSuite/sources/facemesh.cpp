@@ -23,6 +23,9 @@ void FaceMesh :: setFrame(cv::Mat& img)
         auto input_frame = absl::make_unique<mediapipe::ImageFrame>(mediapipe::ImageFormat::SRGB, img.cols, img.rows, mediapipe::ImageFrame::kDefaultAlignmentBoundary);
         cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
         img.copyTo(input_frame_mat);
+
+        
+        cv::imshow("Mediapipe Input", input_frame_mat);
         // Send image packet into the graph.
         size_t frame_timestamp_us = (double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
         graph.AddPacketToInputStream(kInputStream, mediapipe::Adopt(input_frame.release()).At(mediapipe::Timestamp(frame_timestamp_us)));
@@ -40,11 +43,12 @@ mediapipe::Status FaceMesh :: RunMPPGraph()
         MP_RETURN_IF_ERROR(mediapipe::file::GetContents(FLAGS_calculator_graph_config_file, &calculator_graph_config_contents));
         mediapipe::CalculatorGraphConfig config = mediapipe::ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(calculator_graph_config_contents);
         MP_RETURN_IF_ERROR(graph.Initialize(config));
+
         
         std::cout << "Start running the calculator graph. \n";
         ASSIGN_OR_RETURN(mediapipe::OutputStreamPoller poller, graph.AddOutputStreamPoller(kOutputStream));
         MP_RETURN_IF_ERROR(graph.StartRun({}));
-
+        
         while (!isInterruptionRequested()) {
                 // Get the graph result packet, or stop if that fails.
                 mediapipe::Packet packet;
@@ -53,7 +57,9 @@ mediapipe::Status FaceMesh :: RunMPPGraph()
 
                 // Convert back to opencv for display or saving.
                 cv::Mat output_frame_mat = mediapipe::formats::MatView(&output_frame);
-                //cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
+                cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
+
+                cv::imshow("Mediapipe Output", output_frame_mat);
                 
                 QImage img;
                 if (output_frame_mat.channels()== 3)
