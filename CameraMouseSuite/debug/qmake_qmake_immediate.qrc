@@ -1,0 +1,6 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/">
+<file alias="resources/images/lock-locked.png">C:/Users/Ilya/source/repos/CameraMouseSuite-cross-platform/resources/images/lock-locked.png</file>
+<file alias="resources/images/lock-unlocked.png">C:/Users/Ilya/source/repos/CameraMouseSuite-cross-platform/resources/images/lock-unlocked.png</file>
+</qresource>
+</RCC>
