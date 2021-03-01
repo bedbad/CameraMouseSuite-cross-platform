@@ -42,7 +42,7 @@ qt_cc_library(
         ":forms",
         ],
         includes = ["headers/", "resources/"],
-        copts = ["/std:c++17"],
+        copts = ["/std:c++17", "/opencv_world3410"],
         linkopts = ["user32.lib", "Winmm.lib"], 
 )
 
@@ -59,5 +59,5 @@ cc_binary(
         ":resources",
         ":mediapipe_lib",
     ],
-    copts = ["/std:c++17"],
+    copts = ["/std:c++17", "/opencv_world3410"],
 )

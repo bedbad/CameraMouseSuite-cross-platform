@@ -108,6 +108,7 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
         #elif defined Q_OS_MAC
             image = image.mirrored(true, false);
         #endif
+
         cv::Mat mat = ASM::QImageToCvMat(image);
 
         controller->sendFrame(mat);
@@ -159,6 +160,12 @@ void VideoManagerSurface::mousePressEvent(QMouseEvent *event)
 
 void VideoManagerSurface :: showMesh(const QImage &img)
 {
+    if(img.isNull())
+    {
+        qDebug() << "Input image is null ";
+        return;
+    }
+
     QImage image(img);
     if(draw_switch){
             cv::Mat mat = ASM::QImageToCvMat(img);
@@ -172,18 +179,23 @@ void VideoManagerSurface :: showMesh(const QImage &img)
                            QVideoFrame::imageFormatFromPixelFormat(format));
 
              drawText(image, "REAL FPS:"+std::to_string(eval_fps()));
-        }
+    }
 
-        if (frameSize.isEmpty())
-        {
-            settings.setFrameSize(Point(image.size()));
-            frameSize = image.size();
-            scaledFrameSize = image.size();
-            frameOffset = Point(imageLabel->size().width() - image.width(), imageLabel->size().height() - image.height())/2;
-        }
+    if (frameSize.isEmpty())
+    {
+        settings.setFrameSize(Point(image.size()));
+        frameSize = image.size();
+        scaledFrameSize = image.size();
+        frameOffset = Point(imageLabel->size().width() - image.width(), imageLabel->size().height() - image.height())/2;
+    }
 
-    imageLabel->setPixmap(QPixmap::fromImage(image));
-    imageLabel->update();
+    if(!image.isNull())
+    {
+        /*QPixmap px = QPixmap::fromImage(image);
+        px = px.scaled(imageLabel->width(), imageLabel->height());
+        imageLabel->setPixmap(px);
+        imageLabel->update();*/
+    }
 }
 
 } // namespace CMS

@@ -1,4 +1,5 @@
 #include "facemesh.h"
+#include <QtCore/QDebug>
 #include "mediapipe/calculators/util/detections_to_render_data_calculator.pb.h"
 #include "mediapipe/framework/formats/detection.pb.h"
 
@@ -52,7 +53,7 @@ mediapipe::Status FaceMesh :: RunMPPGraph()
 
                 // Convert back to opencv for display or saving.
                 cv::Mat output_frame_mat = mediapipe::formats::MatView(&output_frame);
-                cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
+                //cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
                 
                 QImage img;
                 if (output_frame_mat.channels()== 3)
@@ -61,11 +62,6 @@ mediapipe::Status FaceMesh :: RunMPPGraph()
                 }else{
                         img = QImage((const unsigned char*)(output_frame_mat.data), output_frame_mat.cols,output_frame_mat.rows,QImage::Format_Indexed8);
                 }
-                
-                
-                
-                
-                 //= QImage((const unsigned char*)(output_frame_mat.data), output_frame_mat.cols, output_frame_mat.rows, QImage::Format_Indexed8);
 
                 emit emitPixel(img);
         }
