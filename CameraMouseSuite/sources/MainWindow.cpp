@@ -157,7 +157,7 @@ void MainWindow::setCamera(const QCameraInfo &cameraInfo)
     
     camera->setViewfinder(videoManagerSurface);
 
-    camera->start();
+    //camera->start();
     camera->setCaptureMode(QCamera::CaptureViewfinder);
     camera->searchAndLock();
 }

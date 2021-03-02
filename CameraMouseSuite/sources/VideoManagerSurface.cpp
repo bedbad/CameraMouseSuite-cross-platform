@@ -113,7 +113,8 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
         #endif
 
         //Emit QImage here
-        emitPixel(image);
+        if(faceMesh->isRunning())
+            emitPixel(image);
 
         cv::Mat mat = ASM::QImageToCvMat(image);
 
@@ -166,12 +167,6 @@ void VideoManagerSurface::mousePressEvent(QMouseEvent *event)
 
 void VideoManagerSurface :: showMesh(const QImage &img)
 {
-    if(img.isNull())
-    {
-        qDebug() << "Input image is null ";
-        return;
-    }
-
     QImage image(img);
     if(draw_switch){
             cv::Mat mat = ASM::QImageToCvMat(img);
@@ -185,23 +180,18 @@ void VideoManagerSurface :: showMesh(const QImage &img)
                            QVideoFrame::imageFormatFromPixelFormat(format));
 
              drawText(image, "REAL FPS:"+std::to_string(eval_fps()));
-    }
+        }
 
-    if (frameSize.isEmpty())
-    {
-        settings.setFrameSize(Point(image.size()));
-        frameSize = image.size();
-        scaledFrameSize = image.size();
-        frameOffset = Point(imageLabel->size().width() - image.width(), imageLabel->size().height() - image.height())/2;
-    }
+        if (frameSize.isEmpty())
+        {
+            settings.setFrameSize(Point(image.size()));
+            frameSize = image.size();
+            scaledFrameSize = image.size();
+            frameOffset = Point(imageLabel->size().width() - image.width(), imageLabel->size().height() - image.height())/2;
+        }
 
-    if(!image.isNull())
-    {
-        /*QPixmap px = QPixmap::fromImage(image);
-        px = px.scaled(imageLabel->width(), imageLabel->height());
-        imageLabel->setPixmap(px);
-        imageLabel->update();*/
-    }
+    imageLabel->setPixmap(QPixmap::fromImage(image));
+    imageLabel->update();
 }
 
 } // namespace CMS
