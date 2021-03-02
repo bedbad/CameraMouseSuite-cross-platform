@@ -49,6 +49,7 @@ VideoManagerSurface::VideoManagerSurface(Settings &settings, CameraMouseControll
 
     faceMesh = new FaceMesh();
     connect(faceMesh, SIGNAL(emitPixel(const QImage&)), this, SLOT(showMesh(const QImage)));
+    connect(this, SIGNAL(emitPixel(const QImage&)), faceMesh, SLOT(receivePixel(const QImage&)));
     faceMesh->start();
 
 }
@@ -111,10 +112,13 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
             image = image.mirrored(true, false);
         #endif
 
+        //Emit QImage here
+        emitPixel(image);
+
         cv::Mat mat = ASM::QImageToCvMat(image);
 
         controller->sendFrame(mat);
-        faceMesh->setFrame(mat);
+        //faceMesh->setFrame(mat);
 
         /*if(draw_switch){
             controller->drawOnFrame(mat, featurePosition);

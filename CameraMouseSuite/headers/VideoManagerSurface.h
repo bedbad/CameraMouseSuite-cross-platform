@@ -85,6 +85,7 @@ protected slots:
 
 public slots:
     void showMesh(const QImage &);
+    
 private:
     bool draw_switch;
     Point featurePosition;
@@ -97,6 +98,10 @@ private:
     Point frameOffset;
     QVideoFrame::PixelFormat format;
     FaceMesh *faceMesh;
+
+
+signals:
+    void emitPixel(const QImage &image);
 };
 
 } // namespace CMS

@@ -12,6 +12,8 @@
 
 #include <QtCore/QThread>
 #include <QtGui/QImage>
+#include <QtCore/QList>
+#include <algorithm>
 
 constexpr char kInputStream[] = "input_video";
 constexpr char kOutputStream[] = "output_video";
@@ -23,6 +25,7 @@ class FaceMesh
 
 private:
     mediapipe::CalculatorGraph graph;
+    QList<QImage> imagePipe;
     bool isReady{false};
     int x{0};
 
@@ -34,7 +37,7 @@ public:
 
 public slots:
     void setFrame(cv::Mat&);
-    void recv();
+    void receivePixel(const QImage &);
 
 signals:
     void emitPixel(const QImage &image);
