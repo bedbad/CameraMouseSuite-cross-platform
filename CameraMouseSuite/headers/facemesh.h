@@ -22,22 +22,11 @@ class FaceMesh
         : public QThread
 {
     Q_OBJECT
-
-private:
-    mediapipe::CalculatorGraph graph;
-    QList<QImage> imagePipe;
-    bool isReady{false};
-    int x{0};
-
 public:
     explicit FaceMesh(QObject *parent = 0);
     void run();
     mediapipe::Status RunMPPGraph();
     ~FaceMesh();
-
-public slots:
-    void setFrame(cv::Mat&);
-    void receivePixel(const QImage &);
 
 signals:
     void emitPixel(const QImage &image);

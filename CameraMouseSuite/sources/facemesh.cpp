@@ -14,35 +14,6 @@ FaceMesh :: FaceMesh(QObject *parent)
 {
 }
 
-void FaceMesh :: setFrame(cv::Mat& img) 
-{
-        //cv::cvtColor(camera_frame_raw, camera_frame, cv::COLOR_BGR2RGB);
-        // Wrap Mat into an ImageFrame.
-        auto input_frame = absl::make_unique<mediapipe::ImageFrame>(mediapipe::ImageFormat::SRGB, img.cols, img.rows, mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-        cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
-        img.copyTo(input_frame_mat);
-
-        // Send image packet into the graph.
-        size_t frame_timestamp_us = (double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
-        graph.AddPacketToInputStream(kInputStream, mediapipe::Adopt(input_frame.release()).At(mediapipe::Timestamp(frame_timestamp_us)));
-}
-
-void FaceMesh :: receivePixel(const QImage& img_in)
-{
-        QImage image = img_in.copy();
-        if(image.isNull())
-                return;
-        cv::Mat img = ASM::QImageToCvMat(image);
-        cv::imshow("Input", img);
-        auto input_frame = absl::make_unique<mediapipe::ImageFrame>(mediapipe::ImageFormat::SRGB, img.cols, img.rows, mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-        cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
-        img.copyTo(input_frame_mat);
-
-        // Send image packet into the graph.
-        size_t frame_timestamp_us = (double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
-        graph.AddPacketToInputStream(kInputStream, mediapipe::Adopt(input_frame.release()).At(mediapipe::Timestamp(frame_timestamp_us)));
-        //imagePipe.append(image);
-}
 
 void FaceMesh :: run()
 {
@@ -54,14 +25,14 @@ mediapipe::Status FaceMesh :: RunMPPGraph()
 {
         std::string calculator_graph_config_contents;
         MP_RETURN_IF_ERROR(mediapipe::file::GetContents(FLAGS_calculator_graph_config_file, &calculator_graph_config_contents));
-        std::cout << "Get calculator graph config contents: " << calculator_graph_config_contents;
+        std::cout << "Get calculator graph config contents: " << calculator_graph_config_contents << std::endl;
         mediapipe::CalculatorGraphConfig config = mediapipe::ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(calculator_graph_config_contents);
 
-        std::cout << "Initialize the calculator graph.";
+        std::cout << "Initialize the calculator graph. \n";
         mediapipe::CalculatorGraph graph;
         MP_RETURN_IF_ERROR(graph.Initialize(config));
 
-        std::cout << "Initialize the camera or load the video.";
+        std::cout << "Initialize the camera or load the video. \n";
         cv::VideoCapture capture;
         capture.open(0);
         RET_CHECK(capture.isOpened());
@@ -70,11 +41,11 @@ mediapipe::Status FaceMesh :: RunMPPGraph()
         capture.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
         capture.set(cv::CAP_PROP_FPS, 30);
 
-        std::cout << "Start running the calculator graph.";
+        std::cout << "Start running the calculator graph. \n";
         ASSIGN_OR_RETURN(mediapipe::OutputStreamPoller poller, graph.AddOutputStreamPoller(kOutputStream));
         MP_RETURN_IF_ERROR(graph.StartRun({}));
 
-        std::cout << "Start grabbing and processing frames.";
+        std::cout << "Start grabbing and processing frames. \n";
         bool grab_frames = true;
         while (grab_frames) {
                 // Capture opencv camera or video frame.
@@ -84,7 +55,7 @@ mediapipe::Status FaceMesh :: RunMPPGraph()
                         continue;
         cv::Mat camera_frame;
         cv::cvtColor(camera_frame_raw, camera_frame, cv::COLOR_BGR2RGB);
-        cv::flip(camera_frame, camera_frame, /*flipcode=HORIZONTAL*/ 1);
+        cv::flip(camera_frame, camera_frame, 1);
 
         // Wrap Mat into an ImageFrame.
         auto input_frame = absl::make_unique<mediapipe::ImageFrame>( mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows, mediapipe::ImageFrame::kDefaultAlignmentBoundary);
@@ -106,18 +77,14 @@ mediapipe::Status FaceMesh :: RunMPPGraph()
 
         QImage img;
         if (output_frame_mat.channels()== 3)
-        {
                 img = QImage((const unsigned char*)(output_frame_mat.data), output_frame_mat.cols,output_frame_mat.rows,QImage::Format_RGB888);
-        }else{
+        else
                 img = QImage((const unsigned char*)(output_frame_mat.data), output_frame_mat.cols,output_frame_mat.rows,QImage::Format_Indexed8);
-        }
                 
         emit emitPixel(img);
         
-        //cv::imshow("Output", output_frame_mat);
         // Press any key to exit.
-        const int pressed_key = cv::waitKey(5);
-        if (pressed_key >= 0 && pressed_key != 255) grab_frames = false;  
+        const int pressed_key = cv::waitKey(5); 
         }
 
   LOG(INFO) << "Shutting down.";
