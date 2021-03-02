@@ -100,6 +100,8 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
                 frameCopy.bytesPerLine(),
                 QVideoFrame::imageFormatFromPixelFormat(frameCopy.pixelFormat()));
 
+        //image = image.scaled(640, 480);
+
         // The kind of mirroring needed depends on the OS
         #ifdef Q_OS_LINUX
             image = image.mirrored(true, false);

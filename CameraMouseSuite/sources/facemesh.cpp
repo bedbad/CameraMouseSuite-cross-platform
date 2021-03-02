@@ -20,6 +20,7 @@ void FaceMesh :: setFrame(cv::Mat& img)
 {
         //cv::cvtColor(camera_frame_raw, camera_frame, cv::COLOR_BGR2RGB);
         // Wrap Mat into an ImageFrame.
+        qDebug() << "Image col: " << img.cols << "    Image row: " << img.rows;
         auto input_frame = absl::make_unique<mediapipe::ImageFrame>(mediapipe::ImageFormat::SRGB, img.cols, img.rows, mediapipe::ImageFrame::kDefaultAlignmentBoundary);
         cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
         img.copyTo(input_frame_mat);
