@@ -98,10 +98,6 @@ private:
     Point frameOffset;
     QVideoFrame::PixelFormat format;
     FaceMesh *faceMesh;
-
-
-signals:
-    void emitPixel(const QImage &image);
 };
 
 } // namespace CMS

@@ -49,7 +49,6 @@ VideoManagerSurface::VideoManagerSurface(Settings &settings, CameraMouseControll
 
     faceMesh = new FaceMesh();
     connect(faceMesh, SIGNAL(emitPixel(const QImage&)), this, SLOT(showMesh(const QImage)));
-    connect(this, SIGNAL(emitPixel(const QImage&)), faceMesh, SLOT(receivePixel(const QImage&)));
     faceMesh->start();
 
 }
@@ -111,10 +110,6 @@ bool VideoManagerSurface::present(const QVideoFrame &frame)
         #elif defined Q_OS_MAC
             image = image.mirrored(true, false);
         #endif
-
-        //Emit QImage here
-        if(faceMesh->isRunning())
-            emitPixel(image);
 
         cv::Mat mat = ASM::QImageToCvMat(image);
 
