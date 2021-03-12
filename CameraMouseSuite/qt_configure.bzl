@@ -29,7 +29,8 @@ def qt_autoconf_impl(repository_ctx):
     is_linux_machine = os_name.find("windows") == -1
     if not is_linux_machine:
         # Inside this folder, in Windows you can find include, lib and bin folder
-        default_qt_path = "C:\\\\Qt\\\\5.15.2\\\\msvc2019_64\\\\"
+        #default_qt_path = "C:\\\\Qt\\\\5.15.2\\\\msvc2019_64\\\\"
+        default_qt_path = "E:\\\\Qt\\\\5.15.2\\\\msvc2019_64\\\\"
     else:
         # In Linux, this is the equivalent to the include folder, the binaries are located in
         # /usr/bin/
@@ -44,6 +45,7 @@ def qt_autoconf_impl(repository_ctx):
     qt_path = _get_env_var(repository_ctx, "QT_DIR", default_qt_path)
     if qt_path != default_qt_path:
         print("However QT_DIR is defined and will be used: ", qt_path)
+
         # In Linux in case that we have a standalone installation, we need to provide the path inside the include folder
         qt_path_with_include = qt_path + "/include"
         if is_linux_machine and repository_ctx.path(qt_path_with_include).exists:

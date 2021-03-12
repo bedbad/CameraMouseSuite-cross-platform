@@ -55,7 +55,7 @@ node {
   output_stream: "TENSORS:output_tensors"
   options: {
     [mediapipe.InferenceCalculatorOptions.ext] {
-      model_path: "C://Dev//CameraMouseSuite//mediapipe//mediapipe//modules//face_landmark//face_landmark.tflite"
+      model_path: "F://git//CameraMouseSuite-cross-platform//mediapipe//mediapipe//modules//face_landmark//face_landmark.tflite"
       delegate { xnnpack {} }
     }
   }
