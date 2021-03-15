@@ -55,6 +55,7 @@ qt_cc_library(
         "@qt//:qt_core",
         "@qt//:qt_multimedia",
         "@qt//:qt_multimediawidgets",
+        "@qt//:qt_network",
         "@qt//:qt_widgets",
     ],
 )
