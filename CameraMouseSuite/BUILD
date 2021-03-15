@@ -1,8 +1,12 @@
-load("//:qt.bzl", "qt_ui_library", "qt_cc_library", "qt_resource")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+load("//:qt.bzl", "qt_cc_library", "qt_resource", "qt_ui_library")
 
 qt_resource(
     name = "resources",
-    files = glob(["resources/icons.qrc", "images/*",]),
+    files = glob([
+        "resources/icons.qrc",
+        "images/*",
+    ]),
 )
 
 qt_ui_library(
@@ -13,6 +17,7 @@ qt_ui_library(
 
 cc_library(
     name = "mediapipe_lib",
+    copts = ["/std:c++17"],
     deps = [
         "@mediapipe//mediapipe/framework:calculator_framework",
         "@mediapipe//mediapipe/framework/formats:image_frame",
@@ -26,38 +31,49 @@ cc_library(
         "@mediapipe//mediapipe/framework/port:status",
         "@mediapipe//mediapipe/graphs/face_mesh:desktop_live_calculators",
     ],
-    copts = ["/std:c++17"],
 )
 
 qt_cc_library(
-        name = "library",
-        srcs = glob(["sources/*.cpp"]),
-        hdrs = glob(["headers/*.h"]),
-        deps = [
+    name = "library",
+    srcs = glob(["sources/*.cpp"]),
+    hdrs = glob(["headers/*.h"]),
+    copts = [
+        "/std:c++17",
+        "/opencv_world3410",
+    ],
+    includes = [
+        "headers/",
+        "resources/",
+    ],
+    linkopts = [
+        "user32.lib",
+        "Winmm.lib",
+    ],
+    deps = [
+        ":forms",
+        ":mediapipe_lib",
         "@qt//:qt_core",
         "@qt//:qt_multimedia",
         "@qt//:qt_multimediawidgets",
-        ":mediapipe_lib",
         "@qt//:qt_widgets",
-        ":forms",
-        ],
-        includes = ["headers/", "resources/"],
-        copts = ["/std:c++17", "/opencv_world3410"],
-        linkopts = ["user32.lib", "Winmm.lib"], 
+    ],
 )
 
 cc_binary(
     name = "main",
     srcs = glob(["sources/main.cpp"]),
+    copts = [
+        "/std:c++17",
+        "/opencv_world3410",
+    ],
     includes = glob(["headers/*.h"]),
     deps = [
-        "@qt//:qt_core", 
-        "@qt//:qt_multimedia",
-        "@qt//:qt_widgets",
         ":forms",
         ":library",
-        ":resources",
         ":mediapipe_lib",
+        ":resources",
+        "@qt//:qt_core",
+        "@qt//:qt_multimedia",
+        "@qt//:qt_widgets",
     ],
-    copts = ["/std:c++17", "/opencv_world3410"],
 )

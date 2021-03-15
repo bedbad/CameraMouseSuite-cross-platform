@@ -72,6 +72,7 @@ void MainWindow::setupCameraWidgets()
     // Create device selection menu
     QActionGroup *cameraGroup = new QActionGroup(this);
     cameraGroup->setExclusive(true);
+
     foreach (const QCameraInfo &cameraInfo, QCameraInfo::availableCameras()) {
         QAction *cameraAction = new QAction(cameraInfo.description(), cameraGroup);
         cameraAction->setCheckable(true);

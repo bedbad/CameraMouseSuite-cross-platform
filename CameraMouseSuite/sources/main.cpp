@@ -14,7 +14,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #include "MainWindow.h"
 #include <QtWidgets/QApplication>
 #include "mediapipe/framework/port/commandlineflags.h"

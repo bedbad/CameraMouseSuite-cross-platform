@@ -130,3 +130,10 @@ DISTFILES += \
     qt.BUILD \
     qt.bzl \
     qt_configure.bzl
+
+win32:CONFIG(release, debug|release): LIBS += -LE:/opencv_3410/opencv/build/x64/vc15/lib/ -lopencv_world3410
+else:win32:CONFIG(debug, debug|release): LIBS += -LE:/opencv_3410/opencv/build/x64/vc15/lib/ -lopencv_world3410d
+else:unix: LIBS += -LE:/opencv_3410/opencv/build/x64/vc15/lib/ -lopencv_world3410
+
+INCLUDEPATH += E:/opencv_3410/opencv/build/include
+DEPENDPATH += E:/opencv_3410/opencv/build/include
